@@ -1,0 +1,238 @@
+@import url("fonts.css");
+/* ============================================================
+   TEMPTEMUS PAPAM — Conclave Document System
+   A print-first aesthetic for the 1492 Papal Election LARP.
+   Rubricated manuscript / chancery ledger styling.
+   Fonts embedded via fonts.css (@font-face, base64/local).
+   ============================================================ */
+
+:root {
+  /* --- Ink & parchment --- */
+  --parchment:      #f4ecd8;   /* aged page */
+  --parchment-2:    #efe6cf;   /* slightly deeper panel */
+  --parchment-edge: #e7dabb;   /* table fill / zebra */
+  --ink:            #2b2218;   /* iron-gall sepia-black body text */
+  --ink-soft:       #5a4d3a;   /* secondary / notes */
+
+  /* --- Rubric & heraldry --- */
+  --rubric:         #8c1d18;   /* cardinal vermillion — headers, accents */
+  --rubric-deep:    #6d130f;   /* darker red for rules */
+  --gold:           #9a7b33;   /* ochre / "or" */
+  --gold-soft:      #b89a52;
+  --sepia-line:     #b9a988;   /* table hairlines */
+  --sepia-line-2:   #cdbf9f;   /* faint inner rules */
+
+  /* --- Heraldic tinctures for status tags --- */
+  --vert:           #2f5d3a;   /* green — allies */
+  --vert-bg:        #e3e8d9;
+  --or:             #7a5e15;   /* gold — priority */
+  --or-bg:          #f1e7c6;
+  --gules:          #8c1d18;   /* red — danger / avoid */
+  --gules-bg:       #f0dcd6;
+  --azure:          #2c4a6e;   /* blue — locked / neutral */
+  --azure-bg:       #dde3ec;
+
+  --rule-w: 2.4pt;
+}
+
+/* Force all the parchment / rubric fills to actually print. */
+* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+html, body { background: #d8cba8; }
+
+body {
+  font-family: 'Cardo', 'Georgia', serif;
+  font-size: 10pt;
+  line-height: 1.4;
+  color: var(--ink);
+  background: var(--parchment);
+  max-width: 7.6in;
+  margin: 0 auto;
+  padding: 0.5in 0.55in 0.65in;
+}
+
+/* ---------- Document header (per sheet) ---------- */
+.sheet-head { text-align: center; margin-bottom: 14pt; }
+
+.kicker {
+  font-family: 'IM Fell English SC', 'Cardo', serif;
+  font-size: 9pt;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2pt;
+}
+.kicker .keys { color: var(--rubric); font-style: normal; }
+
+h1 {
+  font-family: 'UnifrakturCook', 'Cardo', serif;
+  font-weight: 700;
+  font-size: 30pt;
+  line-height: 0.98;
+  color: var(--rubric);
+  margin: 2pt 0 3pt;
+  text-shadow: 0 0 0 var(--rubric);
+}
+.byline {
+  font-family: 'IM Fell English', 'Cardo', serif;
+  font-style: italic;
+  font-size: 10.5pt;
+  color: var(--ink-soft);
+  margin-bottom: 8pt;
+}
+
+/* Ornamental fleuron rule */
+.rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  color: var(--rubric);
+  margin: 8pt auto 0;
+  max-width: 5in;
+}
+.rule::before, .rule::after {
+  content: "";
+  flex: 1;
+  height: 0;
+  border-top: 1pt solid var(--gold);
+  box-shadow: 0 2.5pt 0 -1.5pt var(--gold-soft);
+}
+.rule .fleuron { font-size: 13pt; line-height: 1; }
+
+/* ---------- Section headers ---------- */
+h2 {
+  font-family: 'IM Fell English SC', 'Cardo', serif;
+  font-weight: 400;
+  font-size: 14pt;
+  letter-spacing: 0.06em;
+  color: var(--parchment);
+  background: var(--rubric);
+  padding: 4pt 10pt 3pt;
+  margin: 16pt 0 8pt;
+  page-break-after: avoid;
+  border: 0.75pt solid var(--rubric-deep);
+  position: relative;
+}
+h2::before { content: "✠  "; color: var(--gold-soft); }
+
+h3 {
+  font-family: 'Cardo', serif;
+  font-weight: 700;
+  font-size: 11pt;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rubric-deep);
+  margin: 12pt 0 5pt;
+  padding-bottom: 2pt;
+  border-bottom: 1.5pt solid var(--gold);
+  page-break-after: avoid;
+}
+
+/* ---------- Tables (chancery ledger) ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10pt;
+  font-size: 9pt;
+  border-top: var(--rule-w) double var(--rubric-deep);
+  border-bottom: var(--rule-w) double var(--rubric-deep);
+}
+th, td {
+  border: 0.5pt solid var(--sepia-line);
+  padding: 3pt 5pt;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: var(--parchment-2);
+  font-family: 'IM Fell English SC', 'Cardo', serif;
+  font-weight: 400;
+  font-size: 8.5pt;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--rubric-deep);
+  border-bottom: 1.25pt solid var(--gold);
+}
+
+/* Writable rows: clean, light, ruled for ink */
+.write-row td { height: 19pt; background: #fbf7ec; }
+.write-row-tall td { height: 26pt; background: #fbf7ec; }
+tr:nth-child(even).write-row td,
+tr:nth-child(even).write-row-tall td { background: #f6efdd; }
+
+.prefilled {
+  font-weight: 700;
+  font-size: 8.75pt;
+  color: var(--ink);
+}
+.note { font-size: 8pt; font-style: italic; color: var(--ink-soft); }
+
+/* Row state shading */
+.priority { background: var(--or-bg) !important; }
+.priority td { background: var(--or-bg) !important; }
+.locked   { background: var(--parchment-edge) !important; color: #8c7f68; }
+.locked td { background: var(--parchment-edge) !important; color: #8c7f68; }
+.avoid    { background: var(--gules-bg) !important; }
+.avoid td { background: var(--gules-bg) !important; }
+
+/* ---------- Edict / reminder box ---------- */
+.reminder-box {
+  border: 1pt solid var(--gold);
+  outline: 0.5pt solid var(--gold);
+  outline-offset: 2pt;
+  background: var(--parchment-2);
+  padding: 8pt 12pt;
+  margin: 4pt 0 12pt;
+  font-family: 'IM Fell English', 'Cardo', serif;
+  font-size: 9.5pt;
+  line-height: 1.45;
+}
+.reminder-box strong { font-family: 'Cardo', serif; color: var(--rubric-deep); }
+
+/* ---------- Status tags (heraldic) ---------- */
+.checkbox { font-family: 'Cardo', serif; font-size: 11pt; color: var(--rubric); }
+
+.tag {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 7.5pt;
+  letter-spacing: 0.04em;
+  padding: 0 4pt;
+  border: 0.5pt solid;
+  white-space: nowrap;
+}
+.tag-ally    { color: var(--vert); border-color: var(--vert); background: var(--vert-bg); }
+.tag-prio    { color: var(--or);   border-color: var(--or);   background: var(--or-bg); }
+.tag-danger  { color: var(--gules);border-color: var(--gules);background: var(--gules-bg); }
+
+/* ---------- Blank ruled note panel ---------- */
+.note-panel {
+  border: 0.75pt solid var(--sepia-line);
+  border-top: 1.5pt solid var(--gold);
+  background: repeating-linear-gradient(
+    to bottom,
+    #fbf7ec 0, #fbf7ec 17pt,
+    var(--sepia-line-2) 17pt, var(--sepia-line-2) 17.5pt
+  );
+  padding: 4pt 8pt;
+}
+
+/* ---------- Page footer mark ---------- */
+.sheet-foot {
+  text-align: center;
+  margin-top: 14pt;
+  color: var(--gold);
+  font-family: 'IM Fell English SC', serif;
+  font-size: 8pt;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.sheet-foot .keys { color: var(--rubric); }
+
+.page-break { page-break-before: always; }
+
+@page { margin: 0.45in; size: letter; }
+@media print {
+  html, body { background: var(--parchment); }
+  body { padding: 0.2in 0.25in; max-width: none; }
+}

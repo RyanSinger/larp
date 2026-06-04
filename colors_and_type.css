@@ -1,0 +1,144 @@
+/* ============================================================
+   TEMPTEMUS PAPAM — Colors & Type Tokens
+   The foundational design tokens for the 1492 Papal Election
+   LARP material system. Import alongside fonts.css.
+     <link rel="stylesheet" href="fonts.css">
+     <link rel="stylesheet" href="colors_and_type.css">
+   conclave.css builds the print-document components on top of
+   these same values.
+   ============================================================ */
+
+@import url("fonts.css");
+
+:root {
+  /* ----------------------------------------------------------
+     COLOR — Ink & Parchment (the page)
+     ---------------------------------------------------------- */
+  --parchment:      #f4ecd8;  /* primary page / surface     */
+  --parchment-2:    #efe6cf;  /* raised panel / table head  */
+  --parchment-edge: #e7dabb;  /* deepest fill / zebra / disabled */
+  --parchment-lift: #faf6ea;  /* writable cell / card face  */
+  --vellum-shadow:  #d8cba8;  /* desk behind the page       */
+
+  --ink:            #2b2218;  /* iron-gall body text (fg1)  */
+  --ink-soft:       #5a4d3a;  /* secondary text / notes (fg2) */
+  --ink-faint:      #8c7f68;  /* disabled / locked (fg3)    */
+
+  /* semantic foreground aliases */
+  --fg1: var(--ink);
+  --fg2: var(--ink-soft);
+  --fg3: var(--ink-faint);
+  --bg1: var(--parchment);
+  --bg2: var(--parchment-2);
+
+  /* ----------------------------------------------------------
+     COLOR — Rubric & Gilt (the accents)
+     Rubrication = the red ink a scribe reserved for emphasis.
+     ---------------------------------------------------------- */
+  --rubric:         #8c1d18;  /* cardinal vermillion — headers, brand */
+  --rubric-deep:    #6d130f;  /* darker red — rules, hover  */
+  --gold:           #9a7b33;  /* ochre 'or' — hairlines, kicker */
+  --gold-soft:      #b89a52;  /* lighter gilt — glints      */
+
+  --sepia-line:     #b9a988;  /* table hairlines            */
+  --sepia-line-2:   #cdbf9f;  /* faint inner rule           */
+
+  /* ----------------------------------------------------------
+     COLOR — Heraldic tinctures (status & faction)
+     Drawn from the language of blazon. Used for tags, factions,
+     allegiance. Each tincture has a fill (-bg) for shading.
+     ---------------------------------------------------------- */
+  --gules:  #8c1d18;  --gules-bg:  #f0dcd6;  /* red    — danger / avoid / Guelph-Ghibelline war */
+  --vert:   #2f5d3a;  --vert-bg:   #e3e8d9;  /* green  — ally / safe       */
+  --or:     #7a5e15;  --or-bg:     #f1e7c6;  /* gold   — priority / wealth */
+  --azure:  #2c4a6e;  --azure-bg:  #dde3ec;  /* blue   — locked / neutral / the sea */
+  --purpure:#5a3a63;  --purpure-bg:#e7dded;  /* purple — thrones / royalty */
+  --sable:  #2b2218;  --sable-bg:  #e2dcce;  /* black  — culture / default */
+
+  /* ----------------------------------------------------------
+     TIMELINE colour key (from the in-world Renaissance Timeline)
+     ---------------------------------------------------------- */
+  --t-italy:   var(--sable);    /* black  — Italy / culture        */
+  --t-papacy:  var(--vert);     /* green  — the Papacy             */
+  --t-war:     var(--gules);    /* red    — England / France war   */
+  --t-sea:     var(--azure);    /* blue   — the East / at sea      */
+  --t-thrones: var(--purpure);  /* purple — Europe's thrones       */
+
+  /* ----------------------------------------------------------
+     TYPE — Families
+     ---------------------------------------------------------- */
+  --font-display: 'UnifrakturCook', 'Cardo', serif;        /* blackletter — titles, the wordmark */
+  --font-head:    'IM Fell English SC', 'Cardo', serif;    /* incunabula small caps — section bars, labels */
+  --font-body:    'Cardo', 'Georgia', serif;               /* humanist serif — running text, tables */
+  --font-flavor:  'IM Fell English', 'Cardo', serif;       /* Fell italic — edicts, quotes, bylines */
+  --font-mono:    'Courier New', ui-monospace, monospace;  /* family trees, ledgers in plaintext */
+
+  /* ----------------------------------------------------------
+     TYPE — Scale (print points; documents are letter-size)
+     ---------------------------------------------------------- */
+  --t-display: 30pt;   /* h1 / title page          */
+  --t-h2:      14pt;   /* section bar              */
+  --t-h3:      11pt;   /* sub-section              */
+  --t-body:    9.75pt; /* running text             */
+  --t-table:   8.75pt; /* table cells              */
+  --t-small:   8pt;    /* notes, footers           */
+  --t-tag:     7.5pt;  /* heraldic tags            */
+
+  --lh-tight:  1.0;
+  --lh-body:   1.4;
+
+  --ls-caps:   0.05em; /* small-cap letterspacing  */
+  --ls-kicker: 0.2em;  /* kicker letterspacing     */
+}
+
+/* ============================================================
+   SEMANTIC ELEMENT STYLES
+   Apply by including this sheet; these match the document
+   components in conclave.css.
+   ============================================================ */
+
+.ds-type-h1, .specimen h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--t-display);
+  line-height: var(--lh-tight);
+  color: var(--rubric);
+}
+.ds-type-h2 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: var(--t-h2);
+  letter-spacing: var(--ls-caps);
+  color: var(--parchment);
+  background: var(--rubric);
+}
+.ds-type-h3 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--t-h3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rubric-deep);
+}
+.ds-type-body {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  color: var(--ink);
+}
+.ds-type-flavor {
+  font-family: var(--font-flavor);
+  font-style: italic;
+  color: var(--ink-soft);
+}
+.ds-type-kicker {
+  font-family: var(--font-head);
+  font-size: var(--t-small);
+  letter-spacing: var(--ls-kicker);
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.ds-type-mono {
+  font-family: var(--font-mono);
+  font-size: var(--t-small);
+}

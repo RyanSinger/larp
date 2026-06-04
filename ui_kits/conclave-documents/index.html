@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conclave Documents — UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<link rel="stylesheet" href="../../conclave.css">
+<style>
+  /* Showcase chrome only — components carry their own styling */
+  body { padding-bottom: 0.8in; }
+  .kit-label {
+    font-family: var(--font-head); font-size: 9pt; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--gold); margin: 18pt 0 6pt;
+    border-bottom: 0.75pt solid var(--sepia-line); padding-bottom: 3pt;
+  }
+  .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 4pt 0 10pt; }
+  .seal {
+    font-family: var(--font-head); font-size: 9.5pt; letter-spacing: 0.06em;
+    text-transform: uppercase; cursor: pointer;
+    background: var(--parchment-2); color: var(--ink-soft);
+    border: 0.75pt solid var(--sepia-line); padding: 3pt 11pt;
+  }
+  .seal:hover { color: var(--rubric); border-color: var(--gold); }
+  .seal[aria-pressed="true"] {
+    background: var(--rubric); color: var(--parchment); border-color: var(--rubric-deep);
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="HeraldicTag.jsx"></script>
+<script type="text/babel" src="FleuronRule.jsx"></script>
+<script type="text/babel" src="SheetHeader.jsx"></script>
+<script type="text/babel" src="EdictBox.jsx"></script>
+<script type="text/babel" src="DossierCard.jsx"></script>
+<script type="text/babel" src="LedgerTable.jsx"></script>
+
+<script type="text/babel">
+const { useState } = React;
+
+const MERCS = [
+  { commander: "Prospero Colonna", fact: "Ghibelline", price: "" },
+  { commander: "Guidobaldo, Duke of Urbino", fact: "Ghibelline", price: "" },
+  { commander: "Giovanni Bentivoglio", fact: "Guelph", price: "" },
+  { commander: "Niccolo Orsini", fact: "Guelph", price: "" },
+  { commander: '"Gattamelata" Da Narni', fact: "Neutral", price: "" },
+  { commander: "Antonio Ordelaffi", fact: "Neutral", price: "" },
+];
+
+function FactionLedger() {
+  const [f, setF] = useState("All");
+  const factions = ["All", "Ghibelline", "Guelph", "Neutral"];
+  const rows = MERCS.filter((m) => f === "All" || m.fact === f);
+  const cols = [
+    { key: "commander", label: "Commander", width: "46%" },
+    { key: "fact", label: "Faction", width: "20%" },
+    { key: "price", label: "Price", width: "17%" },
+    { key: "status", label: "Status", width: "17%" },
+  ];
+  return (
+    <div>
+      <div className="filter-bar">
+        {factions.map((x) => (
+          <button key={x} className="seal" aria-pressed={f === x} onClick={() => setF(x)}>{x}</button>
+        ))}
+      </div>
+      <LedgerTable columns={cols} rows={rows} writable={true} />
+    </div>
+  );
+}
+
+function Kit() {
+  return (
+    <React.Fragment>
+      <SheetHeader
+        kicker="A Reusable Component Kit"
+        title="Conclave Documents"
+        byline="Primitives for building Temptemus Papam handouts" />
+
+      <EdictBox>
+        <strong>About.</strong> Every Temptemus Papam handout is assembled from the same small set of
+        components. Compose them to spin up new character packets, trackers, and reference sheets that
+        all share one chancery aesthetic and print cleanly.
+      </EdictBox>
+
+      <div className="kit-label">Sheet Header</div>
+      <SheetHeader kicker="Sede Vacante · MCDXCII" title="Vote Tracker" byline="His Eminence, in the Sistine Chapel" />
+
+      <div className="kit-label">Edict Box</div>
+      <EdictBox>
+        <strong>Pricing.</strong> 40,000 fl. minimum (real profit). 20,000 bare minimum.
+        The coin goes to the mercenaries, never to your own purse.
+      </EdictBox>
+
+      <div className="kit-label">Heraldic Tags</div>
+      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginBottom: "10pt" }}>
+        <HeraldicTag kind="ally">ALLY</HeraldicTag>
+        <HeraldicTag kind="priority">PRIORITY</HeraldicTag>
+        <HeraldicTag kind="avoid">AVOID</HeraldicTag>
+        <HeraldicTag kind="locked">LOCKED</HeraldicTag>
+        <HeraldicTag kind="neutral">NEUTRAL</HeraldicTag>
+      </div>
+
+      <div className="kit-label">Dossier Card</div>
+      <DossierCard
+        name="Cardinal Giuliano della Rovere"
+        sub={'Age 49 · Savona · Heir of Sixtus IV · "Uncle Julius"'}
+        tag={{ kind: "ally", label: "ALLY" }}
+        rows={[
+          { label: "You want", text: "His protection in Rome and a place in his faction." },
+          { label: "You offer", text: "Your vote, your mercenary network, loyalty for decades." },
+          { label: "Avoid", text: "Don't be servile — you're his nephew with thirty swords." },
+        ]} />
+
+      <div className="kit-label">Ledger Table — live faction filter</div>
+      <FactionLedger />
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Kit />);
+</script>
+</body>
+</html>

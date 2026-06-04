@@ -1084,5 +1084,13 @@ Patriarch of Venice
 <li><strong>France vs. Milan vs. Naples:</strong> You have family on all three sides. Stay flexible.</li>
 </ul>
 
+
+<script>
+window.addEventListener('load', function(){
+  var go = function(){ setTimeout(function(){ window.print(); }, 500); };
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(go); }
+  else { setTimeout(go, 800); }
+});
+</script>
 </body>
 </html>
