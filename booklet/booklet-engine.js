@@ -302,12 +302,18 @@
       {rn:"VI",  label:"Possessions & Courtiers",  page:pageOf("6. Possessions")},
       {rn:"VII", label:"Forms of Address",         page:pageOf("7. Forms")},
       {rn:"VIII",label:"Key Family Relationships", page:pageOf("8. Key Family")},
+      {rn:"IX",  label:"Rules Mechanics Quick Reference", page:pageOf("9. Rules")},
+      {rn:"X",   label:"Pronunciation Guide",     page:pageOf("10. Pronunciation")},
+      {rn:"XI",  label:"Game Logistics",          page:pageOf("11. Game")},
+      {rn:"XII", label:"Starting State Checklist", page:pageOf("12. Starting")},
+      {rn:"XIII",label:"Map of Europe in 1492",   page:pageOf("13. Map")},
       {part:true, label:"Part II \u00b7 The Conclave Worksheets"},
       {rn:"", label:"Mercenary Deal Tracker", page:pageOf("Mercenary Deal")},
       {rn:"", label:"Marriage Deal Tracker",  page:pageOf("Marriage Deal")},
       {rn:"", label:"Vote Tracker",           page:pageOf("Vote Tracker")},
       {rn:"", label:"Favors & Promises",      page:pageOf("Favors")},
-      {rn:"", label:"Canonization & War",     page:pageOf("Canonization")}
+      {rn:"", label:"Canonization & War",     page:pageOf("Canonization")},
+      {rn:"", label:"Asset Status & Letters", page:pageOf("Asset Status")}
     ];
 
     // assemble ordered leaves: cover, toc, ...flowed, notes(pad), colophon
@@ -364,8 +370,15 @@
   }
 
   function go(){ initControls(); build(); }
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(go);
-  else window.addEventListener("load",go);
+  function start(){
+    var waits=[];
+    if(document.fonts && document.fonts.ready) waits.push(document.fonts.ready);
+    waits.push(new Promise(function(res){
+      var im=new Image(); im.onload=res; im.onerror=res; im.src="europe-1492-map.jpg";
+    }));
+    Promise.all(waits).then(go);
+  }
+  start();
   // expose for the other view
   window.__bookletBuild=build;
 })();

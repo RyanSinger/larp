@@ -177,6 +177,13 @@ tr:nth-child(even).write-row td, tr:nth-child(even).write-row-tall td{ backgroun
 .profile-row{ margin-bottom:2pt; font-size:8.1pt; line-height:1.34; }
 .profile-row strong{ color:var(--rubric-deep); }
 
+/* quick-reference card (section 12 checklist) */
+.qr-box{ border:1pt solid var(--gold); outline:.5pt solid var(--gold); outline-offset:2.5pt;
+  padding:7pt 9pt; margin:6pt 0 8pt; background:var(--parchment-2); }
+.qr-box h3{ margin-top:6pt; border-bottom-color:var(--gold); }
+.qr-box table{ border-top:none; border-bottom:none; }
+.qr-box td{ padding:1.5pt 4pt; }
+
 /* reminders / edicts */
 .reminder,.reminder-box{ background:var(--parchment-2); border:1pt solid var(--gold);
   border-left:3pt solid var(--rubric); padding:5pt 9pt; margin:6pt 0;
