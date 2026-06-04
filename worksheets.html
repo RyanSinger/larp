@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cardinal Sanseverino: Worksheets</title>
+<style>
+  @page {
+    margin: 0.5in;
+    size: letter;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9pt;
+    line-height: 1.3;
+    color: #111;
+    max-width: 7.5in;
+    margin: 0 auto;
+    padding: 0.5in;
+  }
+  h1 {
+    font-size: 14pt;
+    text-align: center;
+    margin-bottom: 2pt;
+    border-bottom: 2pt solid #111;
+    padding-bottom: 4pt;
+  }
+  h1 small { font-size: 9pt; font-weight: normal; }
+  h2 {
+    font-size: 11pt;
+    margin-top: 10pt;
+    margin-bottom: 6pt;
+    background: #222;
+    color: #fff;
+    padding: 3pt 6pt;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 9pt;
+    margin-top: 8pt;
+    margin-bottom: 4pt;
+    page-break-after: avoid;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8pt;
+    font-size: 8.5pt;
+  }
+  th, td {
+    border: 0.75pt solid #333;
+    padding: 3pt 4pt;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: #e0e0e0;
+    font-weight: bold;
+    font-size: 7.5pt;
+    text-transform: uppercase;
+  }
+  .write-row td {
+    height: 18pt;
+  }
+  .write-row-tall td {
+    height: 24pt;
+  }
+  .prefilled {
+    font-weight: bold;
+    font-size: 8pt;
+  }
+  .note {
+    font-size: 7.5pt;
+    color: #555;
+  }
+  .priority {
+    background: #fff9e6;
+  }
+  .locked {
+    background: #f0f0f0;
+    color: #888;
+  }
+  .avoid {
+    background: #fde8e8;
+  }
+  .page-break { page-break-before: always; }
+  .reminder-box {
+    border: 1pt solid #333;
+    background: #f5f5f5;
+    padding: 4pt 8pt;
+    margin-bottom: 8pt;
+    font-size: 8pt;
+  }
+  .checkbox { font-family: 'Courier New', monospace; }
+  @media print {
+    body { padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- WORKSHEET 1: MERCENARY DEAL TRACKER -->
+<!-- ============================================================ -->
+
+<h1>Mercenary Deal Tracker<br><small>Cardinal Sanseverino &bull; Conclave 1492</small></h1>
+
+<div class="reminder-box">
+<strong>Pricing:</strong> 40,000 min (real profit). 20,000 bare min. 50,000 good. 60,000+ very good. Fledglings cannot go below 40,000.<br>
+<strong>Remember:</strong> Money goes to mercenaries, not you. First contract sets faction alignment. Mercs won't fight close kin. Alliances and marriages can be worth more than gold.
+</div>
+
+<h3>Experienced Commanders</h3>
+<table>
+<tr>
+  <th style="width:22%;">Commander</th>
+  <th style="width:6%;">Fact.</th>
+  <th style="width:18%;">Buyer</th>
+  <th style="width:10%;">Price</th>
+  <th style="width:28%;">Other Terms (marriage, title, etc.)</th>
+  <th style="width:10%;">Status</th>
+</tr>
+<tr class="write-row"><td class="prefilled">Giovanni Bentivoglio</td><td class="note">Gue.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Ermes Bentivoglio</td><td class="note">Gue.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Tiberio Brandolini</td><td class="note">Gue.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Prospero Colonna</td><td class="note">Ghi.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Ferrand d'Este</td><td class="note">~Ghi.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Gattamelata (Da Narni)</td><td class="note">Neut.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Francesco Gonzaga <span class="note">(x2)</span></td><td class="note">Ghi.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Guidobaldo <span class="note">(x2)</span></td><td class="note">Ghi.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Carlo Malatesta</td><td class="note">~Gue.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Federigo Malavolti</td><td class="note">Ghi.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row locked"><td class="prefilled">Gianfrancesco Sans.</td><td class="note">Ghi.</td><td style="color:#888;">France/Charles</td><td></td><td style="color:#888;">LOCKED</td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Antonello Savelli</td><td class="note">Ghi.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Astorre Manfredi</td><td class="note">Gue.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Niccolo Orsini</td><td class="note">Gue.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Giov. della Rovere (Sora)</td><td class="note">Ghi.</td><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<h3>Fledgling Commanders (need 40,000)</h3>
+<table>
+<tr>
+  <th style="width:22%;">Commander</th>
+  <th style="width:6%;">Fact.</th>
+  <th style="width:18%;">Buyer</th>
+  <th style="width:10%;">Price</th>
+  <th style="width:28%;">Other Terms</th>
+  <th style="width:10%;">Status</th>
+</tr>
+<tr class="write-row priority"><td class="prefilled">Annibale Sanseverino</td><td class="note">Ghi.</td><td></td><td></td><td></td><td><strong>PRIORITY</strong></td></tr>
+<tr class="write-row priority"><td class="prefilled">Ugo Sanseverino</td><td class="note">Ghi.</td><td></td><td></td><td></td><td><strong>PRIORITY</strong></td></tr>
+<tr class="write-row priority"><td class="prefilled">Sciarra Colonna</td><td class="note">Ghi.</td><td></td><td></td><td></td><td><strong>PRIORITY</strong></td></tr>
+<tr class="write-row"><td class="prefilled">Ottaviano Fregoso</td><td class="note">Ghi.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Paride Alidosi</td><td class="note">Neut.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Alessandro Bentivoglio</td><td class="note">Gue.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Troilo Malatesta</td><td class="note">~Gue.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Antonio Ordelaffi</td><td class="note">Neut.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row avoid"><td class="prefilled">Orsino Orsini</td><td class="note">Gue.</td><td></td><td></td><td style="color:#c00;">AVOID: useless coward</td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Virginio Orsini</td><td class="note">Gue.</td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Silvio Savelli</td><td class="note">Ghi.</td><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<h3>Notes</h3>
+<div style="border:0.75pt solid #333; height: 80pt; padding: 4pt;"></div>
+
+<!-- ============================================================ -->
+<!-- WORKSHEET 2: MARRIAGE DEAL TRACKER -->
+<!-- ============================================================ -->
+
+<div class="page-break"></div>
+<h1>Marriage Deal Tracker<br><small>Cardinal Sanseverino &bull; Conclave 1492</small></h1>
+
+<div class="reminder-box">
+<strong>Rank guide:</strong> A=emperor/king heirs. B=titled high nobility. C=untitled nobility. D=minor nobles. F=commoners. Match within 1 grade (A to C = scandal).<br>
+<strong>Rules:</strong> Bride's family provides dowry. 15,000 per Sanseverino sister available. Natural children = 1 rank below normal. Marriages dissolve only before pope elected. Legitimization only by pope.
+</div>
+
+<h3>Brides You Are Placing</h3>
+<table>
+<tr>
+  <th style="width:18%;">Bride</th>
+  <th style="width:5%;">Rank</th>
+  <th style="width:18%;">Matched To</th>
+  <th style="width:14%;">His Family</th>
+  <th style="width:8%;">Dowry</th>
+  <th style="width:24%;">Terms / Alliance Created</th>
+  <th style="width:8%;">Status</th>
+</tr>
+<tr class="write-row"><td class="prefilled">Ludovica Sans.</td><td class="note">B/C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Eleonora Sans.</td><td class="note">B/C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Ippolita Sans.</td><td class="note">B/C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Elizabetta Sans.</td><td class="note">C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Stefania Sans.</td><td class="note">C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Francesca Sans.</td><td class="note">C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Flora Malavolti S.</td><td class="note">C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Panchina Malavolti</td><td class="note">D</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Caterina Malavolti</td><td class="note">D</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Bettina Fregoso</td><td class="note">C/D</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Caterina Fregoso</td><td class="note">C/D</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Costanza Fregoso</td><td class="note">C/D</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Giovanna Malatesta</td><td class="note">C/D</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Dorotea Malatesta</td><td class="note">C/D</td><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<h3>Grooms You Are Placing</h3>
+<table>
+<tr>
+  <th style="width:18%;">Groom</th>
+  <th style="width:5%;">Rank</th>
+  <th style="width:18%;">Matched To</th>
+  <th style="width:14%;">Her Family</th>
+  <th style="width:8%;">Dowry</th>
+  <th style="width:24%;">Terms / Alliance Created</th>
+  <th style="width:8%;">Status</th>
+</tr>
+<tr class="write-row"><td class="prefilled">Ugo Sans.</td><td class="note">B/C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Giorgio Sans.</td><td class="note">B/C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Giulio Sans.</td><td class="note">C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Ottaviano Sans.</td><td class="note">C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Donosdeo Malavolti</td><td class="note">D</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Azzolino Malavolti</td><td class="note">D</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Carlo Malatesta</td><td class="note">C</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Troilo Malatesta</td><td class="note">C/D</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Sigismundo Mal.</td><td class="note">C</td><td></td><td></td><td></td><td style="color:#888;">child only</td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Ottaviano Fregoso</td><td class="note">C/D</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Battista Fregoso</td><td class="note">C/D</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Federigo Fregoso</td><td class="note">C/D</td><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<h3>Special Marriage Tasks</h3>
+<table>
+<tr><th style="width:5%;"></th><th style="width:28%;">Task</th><th style="width:20%;">Matched To</th><th style="width:35%;">Notes</th><th style="width:8%;">Done?</th></tr>
+<tr class="write-row priority"><td class="checkbox">&#9744;</td><td class="prefilled">Bride for Francesco Gonzaga (A/B)</td><td></td><td></td><td></td></tr>
+<tr class="write-row priority"><td class="checkbox">&#9744;</td><td class="prefilled">Bride for Giovanni Gonzaga</td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="checkbox">&#9744;</td><td class="prefilled">Nunnery of San Maurizio (Milan)</td><td></td><td></td><td></td></tr>
+</table>
+
+<h3>Notes</h3>
+<div style="border:0.75pt solid #333; height: 60pt; padding: 4pt;"></div>
+
+<!-- ============================================================ -->
+<!-- WORKSHEET 3: VOTE TRACKER -->
+<!-- ============================================================ -->
+
+<div class="page-break"></div>
+<h1>Vote Tracker<br><small>Cardinal Sanseverino &bull; Conclave 1492 &bull; 13 votes = majority = new pope</small></h1>
+
+<div class="reminder-box">
+Votes 1-3: Day 1 (June 8) &bull; Votes 4-6: Day 2 (June 9) &bull; Votes 7-9: Day 3 (June 10)<br>
+No pope by Vote 9 = <strong>Ottomans invade Europe</strong>
+</div>
+
+<table>
+<tr>
+  <th style="width:22%;">Cardinal</th>
+  <th style="width:8.7%;">V1</th>
+  <th style="width:8.7%;">V2</th>
+  <th style="width:8.7%;">V3</th>
+  <th style="width:8.7%;">V4</th>
+  <th style="width:8.7%;">V5</th>
+  <th style="width:8.7%;">V6</th>
+  <th style="width:8.7%;">V7</th>
+  <th style="width:8.7%;">V8</th>
+  <th style="width:8.7%;">V9</th>
+</tr>
+<tr class="write-row"><td class="prefilled">Borgia</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Carafa</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Colonna</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">"Samson" Nanni</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Orsini</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Piccolomini</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">della Rovere</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Ascanio Sforza</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Torriani</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">d'Aubusson</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Bri&ccedil;onnet</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Campofregoso</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">da Costa</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Patriarch (Venice)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Sangiorgio</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Soderini</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Zen</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Bembo</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">de Bucy</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Castellesi</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">d'Este</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">"Leo" de Medici</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Riario</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row" style="background:#e8f4e8;"><td class="prefilled"><strong>SANSEVERINO (you)</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row"><td class="prefilled">Schiner</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<table style="margin-top:6pt;">
+<tr>
+  <th style="width:22%;">Tally</th>
+  <th style="width:8.7%;">V1</th>
+  <th style="width:8.7%;">V2</th>
+  <th style="width:8.7%;">V3</th>
+  <th style="width:8.7%;">V4</th>
+  <th style="width:8.7%;">V5</th>
+  <th style="width:8.7%;">V6</th>
+  <th style="width:8.7%;">V7</th>
+  <th style="width:8.7%;">V8</th>
+  <th style="width:8.7%;">V9</th>
+</tr>
+<tr class="write-row-tall"><td class="prefilled">Leading candidate</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td class="prefilled">Their vote count</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td class="prefilled">2nd place / count</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- WORKSHEET 4: FAVORS & PROMISES LEDGER -->
+<!-- ============================================================ -->
+
+<div class="page-break"></div>
+<h1>Favors &amp; Promises Ledger<br><small>Cardinal Sanseverino &bull; Conclave 1492</small></h1>
+
+<h2>What They Owe Me</h2>
+<table>
+<tr>
+  <th style="width:18%;">Person</th>
+  <th style="width:40%;">Promise</th>
+  <th style="width:18%;">Context / When</th>
+  <th style="width:10%;">Delivered?</th>
+</tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<h2>What I Owe Them</h2>
+<table>
+<tr>
+  <th style="width:18%;">Person</th>
+  <th style="width:40%;">Promise</th>
+  <th style="width:18%;">Context / When</th>
+  <th style="width:10%;">Delivered?</th>
+</tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<h2>My Vote Commitments</h2>
+<table>
+<tr>
+  <th style="width:10%;">Vote #</th>
+  <th style="width:25%;">Promised to Vote For</th>
+  <th style="width:25%;">Promised to Whom</th>
+  <th style="width:30%;">Conditions</th>
+</tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<h2>Money Tracker</h2>
+
+<div class="reminder-box">
+Starting cash: <strong>20,000 florins</strong> &bull; Dowry reserve: <strong>15,000 per Sanseverino sister</strong>
+</div>
+
+<table>
+<tr>
+  <th style="width:45%;">Transaction</th>
+  <th style="width:15%;">In</th>
+  <th style="width:15%;">Out</th>
+  <th style="width:15%;">Balance</th>
+</tr>
+<tr class="write-row"><td class="prefilled" style="color:#666;">Starting balance</td><td></td><td></td><td><strong>20,000</strong></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- WORKSHEET 5: CANONIZATION & WAR TRACKER -->
+<!-- ============================================================ -->
+
+<div class="page-break"></div>
+<h1>Canonization &amp; War Tracker<br><small>Cardinal Sanseverino &bull; Conclave 1492</small></h1>
+
+<h2>Canonization Tracker</h2>
+
+<div class="reminder-box">
+Talk to <strong>Cardinal "Achilles" Sangiorgio</strong> (Postulator General). New saints boost army recruitment in their home region. Push canonizations that help your mercenaries' clients. Block ones that help the enemy. 40 finalists connected to various places, families, and factions.
+</div>
+
+<table>
+<tr>
+  <th style="width:22%;">Saint Proposed</th>
+  <th style="width:18%;">Home Region</th>
+  <th style="width:25%;">Who Benefits Militarily</th>
+  <th style="width:20%;">Who Is Hurt</th>
+  <th style="width:10%;">Status</th>
+</tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<h2>War Tracker (Day 3: declarations due by 9 PM)</h2>
+
+<h3>Campaigns</h3>
+<table>
+<tr>
+  <th style="width:20%;">Campaign / Region</th>
+  <th style="width:20%;">Our Side</th>
+  <th style="width:20%;">Enemy Side</th>
+  <th style="width:25%;">Our Mercs There</th>
+  <th style="width:10%;">Result</th>
+</tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td><td></td></tr>
+</table>
+
+<h3>Key Assets in Play</h3>
+<table>
+<tr><th style="width:35%;">Asset</th><th style="width:55%;">Assigned To / Status</th></tr>
+<tr class="write-row-tall"><td class="prefilled">Venetian Shadow Boat</td><td></td></tr>
+<tr class="write-row-tall"><td class="prefilled">Port of Salerno</td><td></td></tr>
+<tr class="write-row-tall"><td class="prefilled">Caiazzo defense</td><td></td></tr>
+<tr class="write-row-tall"><td class="prefilled">Annibale placement</td><td></td></tr>
+<tr class="write-row-tall"><td class="prefilled">Ugo placement</td><td></td></tr>
+<tr class="write-row-tall"><td class="prefilled">Sciarra Colonna placement</td><td></td></tr>
+</table>
+
+<h3>Family Safety Checklist</h3>
+<table>
+<tr><th style="width:5%;"></th><th>Check</th><th style="width:40%;">Notes</th></tr>
+<tr class="write-row"><td class="checkbox">&#9744;</td><td>No Sanseverino mercenaries fighting each other</td><td></td></tr>
+<tr class="write-row"><td class="checkbox">&#9744;</td><td>Caiazzo / Naples lands defended</td><td></td></tr>
+<tr class="write-row"><td class="checkbox">&#9744;</td><td>Guidobaldo and Gonzaga coordinated</td><td></td></tr>
+<tr class="write-row"><td class="checkbox">&#9744;</td><td>Brothers placed in survivable campaigns</td><td></td></tr>
+<tr class="write-row"><td class="checkbox">&#9744;</td><td>No kinsmen on opposite sides of same battle</td><td></td></tr>
+<tr class="write-row"><td class="checkbox">&#9744;</td><td>Colonna territories protected</td><td></td></tr>
+<tr class="write-row"><td class="checkbox">&#9744;</td><td>Della Rovere faction interests covered</td><td></td></tr>
+</table>
+
+<h3>Titles &amp; Knighthoods Secured</h3>
+<table>
+<tr>
+  <th style="width:22%;">Brother / Kinsman</th>
+  <th style="width:25%;">Title Granted</th>
+  <th style="width:22%;">Granted By</th>
+  <th style="width:22%;">In Exchange For</th>
+</tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+<tr class="write-row-tall"><td></td><td></td><td></td><td></td></tr>
+</table>
+
+</body>
+</html>
