@@ -1,0 +1,351 @@
+/* ============================================================
+   TEMPTEMUS PAPAM — Half-letter booklet (5.5 x 8.5 in)
+   Print-production layer: trim pages, bleed, crop marks,
+   saddle-stitch imposition, covers. Built on the conclave
+   rubricated-manuscript tokens. Page geometry in CSS px @96dpi
+   MUST stay in sync with booklet-engine.js (see GEOM there).
+   ============================================================ */
+
+:root{
+  --parchment:#f4ecd8; --parchment-2:#efe6cf; --parchment-edge:#e7dabb;
+  --ink:#2b2218; --ink-soft:#5a4d3a;
+  --rubric:#8c1d18; --rubric-deep:#6d130f; --gold:#9a7b33; --gold-soft:#b89a52;
+  --sepia-line:#b9a988; --sepia-line-2:#cdbf9f;
+  --vert:#2f5d3a; --vert-bg:#e3e8d9; --or:#7a5e15; --or-bg:#f1e7c6;
+  --gules:#8c1d18; --gules-bg:#f0dcd6; --azure:#2c4a6e; --azure-bg:#dde3ec;
+
+  /* page geometry (px @96dpi) — keep in sync with engine GEOM */
+  --trim-w:528px; --trim-h:816px; --bleed:12px;
+  --m-inner:52px; --m-outer:34px; --m-top:40px; --m-bot:44px;
+}
+
+*{box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Cardo','Georgia',serif;
+  color:var(--ink);
+  background:#3b352b;            /* dark studio desk (screen only) */
+  font-size:9pt; line-height:1.4;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------------- screen staging ---------------- */
+#stage{ padding:34px 16px 80px; }
+.stage-rail{
+  max-width:1180px; margin:0 auto 22px; display:flex; flex-wrap:wrap;
+  align-items:center; gap:14px; color:#e8dcc0;
+  font-family:'IM Fell English SC','Cardo',serif; letter-spacing:.04em;
+}
+.stage-rail h1{ all:unset; font-family:'UnifrakturCook',serif; color:#e9c97a;
+  font-size:23px; line-height:1; }
+.stage-rail .meta{ font-size:12px; color:#b7a890; opacity:.85; }
+.stage-note{ max-width:1180px; margin:0 auto 26px; color:#cdbf9f;
+  font-family:'IM Fell English','Cardo',serif; font-style:italic; font-size:13.5px;
+  line-height:1.5; border-left:2px solid var(--gold); padding-left:12px; max-width:760px;}
+.ctrl{ display:inline-flex; align-items:center; gap:7px; background:#231f18;
+  border:1px solid #5b4f3a; color:#e8dcc0; padding:6px 11px; border-radius:2px;
+  font-family:'IM Fell English SC',serif; font-size:12px; letter-spacing:.06em;
+  text-transform:uppercase; cursor:pointer; }
+.ctrl select{ background:#231f18; color:#e8dcc0; border:none; font-family:inherit;
+  font-size:12px; letter-spacing:.04em; outline:none; cursor:pointer; }
+.ctrl b{ color:#e9c97a; font-weight:400; }
+
+/* a "spread" pairs two leaves on screen for the linear view */
+.flowdoc{ display:flex; flex-direction:column; align-items:center; gap:26px; }
+.spread{ display:flex; gap:2px; box-shadow:0 18px 40px -16px rgba(0,0,0,.7); }
+
+/* ---------------- the trim page (5.5x8.5) ---------------- */
+.leaf{
+  position:relative; width:var(--trim-w); height:var(--trim-h);
+  background:var(--parchment); overflow:hidden;
+  padding:var(--m-top) var(--m-outer) var(--m-bot) var(--m-inner); /* recto default */
+}
+.leaf.verso{ padding:var(--m-top) var(--m-inner) var(--m-bot) var(--m-outer); }
+.leaf-body{ position:relative; height:100%; }
+
+/* folio (page number) sits in the bottom margin band */
+.folio{
+  position:absolute; left:0; right:0; bottom:calc(-1 * var(--m-bot) + 14px);
+  text-align:center; color:var(--gold);
+  font-family:'IM Fell English SC',serif; font-size:7.5pt; letter-spacing:.22em;
+}
+.folio .keys{ color:var(--rubric); }
+
+/* ---------------- linear (print-shop) bleed wrapper ---------------- */
+.bleed{
+  position:relative; width:calc(var(--trim-w) + 2*var(--bleed));
+  height:calc(var(--trim-h) + 2*var(--bleed));
+  background:var(--parchment);     /* parchment bleeds to the edge */
+  padding:var(--bleed);
+}
+.bleed .leaf{ box-shadow:none; }
+/* crop marks (engine injects 4 corner spans) */
+.cm{ position:absolute; width:var(--bleed); height:var(--bleed); pointer-events:none; }
+.cm::before,.cm::after{ content:""; position:absolute; background:#111; }
+.cm::before{ /* vertical tick */ width:.5px; height:9px; }
+.cm::after{  /* horizontal tick */ height:.5px; width:9px; }
+.cm-tl{ top:0; left:0; } .cm-tl::before{ left:0; bottom:0; } .cm-tl::after{ top:0; left:0; }
+.cm-tr{ top:0; right:0; } .cm-tr::before{ right:0; bottom:0; } .cm-tr::after{ top:0; right:0; }
+.cm-bl{ bottom:0; left:0; } .cm-bl::before{ left:0; top:0; } .cm-bl::after{ bottom:0; left:0; }
+.cm-br{ bottom:0; right:0; } .cm-br::before{ right:0; top:0; } .cm-br::after{ bottom:0; right:0; }
+
+/* ---------------- imposition sheet (landscape letter, 2-up) ---------------- */
+.imp-sheet{
+  position:relative; width:calc(2*var(--trim-w)); height:var(--trim-h);
+  background:var(--parchment); display:flex;
+  box-shadow:0 18px 40px -16px rgba(0,0,0,.7);
+}
+.imp-sheet .leaf{ box-shadow:none; }
+.imp-spine{ position:absolute; top:0; bottom:0; left:50%; width:0;
+  border-left:.5px dashed #b9a98855; }
+.imp-label{ position:absolute; top:4px; left:6px; font-size:9px; color:#b9a98899;
+  font-family:'IM Fell English SC',serif; letter-spacing:.1em; }
+
+/* ============================================================
+   CONTENT COMPONENTS (scaled for half-letter)
+   ============================================================ */
+h1,h2,h3,p,ul,ol,table{ margin:0; }
+
+/* worksheet page-topper (from .sheet-head) */
+.sheet-head{ text-align:center; margin:0 0 9pt; }
+.sheet-head .kicker{ font-family:'IM Fell English SC','Cardo',serif; font-size:7pt;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:2pt; }
+.sheet-head .kicker .keys{ color:var(--rubric); }
+.sheet-head h1{ font-family:'UnifrakturCook','Cardo',serif; font-weight:700;
+  font-size:21pt; line-height:1; color:var(--rubric); margin:1pt 0 2pt; }
+.sheet-head .byline{ font-family:'IM Fell English','Cardo',serif; font-style:italic;
+  font-size:8.5pt; color:var(--ink-soft); margin-bottom:4pt; }
+.sheet-head .rule{ display:flex; align-items:center; gap:8px; justify-content:center;
+  color:var(--rubric); margin:5pt auto 0; max-width:3.4in; }
+.sheet-head .rule::before,.sheet-head .rule::after{ content:""; flex:1; height:0;
+  border-top:1pt solid var(--gold); box-shadow:0 2pt 0 -1.4pt var(--gold-soft); }
+.sheet-head .rule .fleuron{ font-size:11pt; line-height:1; }
+
+/* section bar */
+h2{
+  font-family:'IM Fell English SC','Cardo',serif; font-weight:400;
+  font-size:11.5pt; letter-spacing:.05em; color:var(--parchment);
+  background:var(--rubric); border:.75pt solid var(--rubric-deep);
+  padding:3pt 8pt 2.5pt; margin:11pt 0 6pt;
+}
+h2:first-child{ margin-top:0; }
+h2::before{ content:"✠  "; color:var(--gold-soft); }
+
+h3{
+  font-family:'Cardo',serif; font-weight:700; font-size:9.5pt; letter-spacing:.04em;
+  text-transform:uppercase; color:var(--rubric-deep); margin:9pt 0 4pt;
+  padding-bottom:1.5pt; border-bottom:1.25pt solid var(--gold);
+}
+h3:first-child{ margin-top:0; }
+
+/* tables (chancery ledger) */
+table{
+  width:100%; border-collapse:collapse; margin:0 0 8pt; font-size:7.8pt;
+  border-top:2.2pt double var(--rubric-deep); border-bottom:2.2pt double var(--rubric-deep);
+}
+th,td{ border:.5pt solid var(--sepia-line); padding:2pt 3.5pt; text-align:left;
+  vertical-align:top; }
+th{ background:var(--parchment-2); font-family:'IM Fell English SC','Cardo',serif;
+  font-weight:400; font-size:6.9pt; letter-spacing:.04em; text-transform:uppercase;
+  color:var(--rubric-deep); border-bottom:1pt solid var(--gold); }
+tr:nth-child(even) td{ background:#faf6ea; }
+td strong{ color:var(--ink); }
+/* the widest 6–7 col prose tables get an extra-tight face */
+table.t-tight{ font-size:7.2pt; }
+table.t-tight th{ font-size:6.5pt; }
+table.t-tight td,table.t-tight th{ padding:1.6pt 2.6pt; }
+
+/* writable rows (worksheets) */
+.write-row td{ height:16pt; background:#fbf7ec; }
+.write-row-tall td{ height:21pt; background:#fbf7ec; }
+tr:nth-child(even).write-row td, tr:nth-child(even).write-row-tall td{ background:#f6efdd; }
+.prefilled{ font-weight:700; font-size:7.4pt; color:var(--ink); }
+.note{ font-size:6.8pt; font-style:italic; color:var(--ink-soft); }
+.priority td{ background:var(--or-bg)!important; }
+.locked td{ background:var(--parchment-edge)!important; color:#8c7f68; }
+.avoid td{ background:var(--gules-bg)!important; }
+.checkbox{ font-family:'Cardo',serif; font-size:10pt; color:var(--rubric); }
+
+/* profiles (dossier cards) */
+.profile{ margin:0 0 7pt; background:#faf6ea; border:.6pt solid var(--sepia-line);
+  border-left:3pt solid var(--rubric); padding:5pt 8pt 6pt; }
+.profile-header{ font-family:'Cardo',serif; font-weight:700; font-size:9.3pt;
+  color:var(--rubric-deep); margin-bottom:1.5pt; }
+.profile-sub{ font-family:'IM Fell English','Cardo',serif; font-style:italic;
+  font-size:7.6pt; color:var(--ink-soft); margin-bottom:4pt; }
+.profile-row{ margin-bottom:2pt; font-size:8.1pt; line-height:1.34; }
+.profile-row strong{ color:var(--rubric-deep); }
+
+/* reminders / edicts */
+.reminder,.reminder-box{ background:var(--parchment-2); border:1pt solid var(--gold);
+  border-left:3pt solid var(--rubric); padding:5pt 9pt; margin:6pt 0;
+  font-family:'IM Fell English','Cardo',serif; font-size:8.3pt; line-height:1.4; }
+.reminder-box{ outline:.5pt solid var(--gold); outline-offset:2pt; border-left:1pt solid var(--gold); }
+.reminder strong,.reminder-box strong{ font-family:'Cardo',serif; color:var(--rubric-deep); }
+
+/* family tree */
+.family-tree{ font-family:'Courier New',monospace; font-size:6.6pt; white-space:pre;
+  line-height:1.32; background:var(--parchment-2); padding:6pt 8pt;
+  border:.6pt solid var(--sepia-line); border-top:1.5pt solid var(--gold);
+  color:var(--ink); overflow:hidden; }
+
+/* blank ruled note panel (worksheets) */
+.note-panel{ border:.75pt solid var(--sepia-line); border-top:1.5pt solid var(--gold);
+  background:repeating-linear-gradient(to bottom, #fbf7ec 0, #fbf7ec 15pt,
+    var(--sepia-line-2) 15pt, var(--sepia-line-2) 15.6pt); }
+
+/* heraldic tags */
+.ally-tag,.priority-tag,.danger-tag,.tag{
+  font-family:'IM Fell English SC',serif; font-size:6.4pt; letter-spacing:.03em;
+  padding:0 3pt; border:.5pt solid; white-space:nowrap; }
+.ally-tag,.tag-ally{ color:var(--vert); border-color:var(--vert); background:var(--vert-bg); }
+.priority-tag,.tag-prio{ color:var(--or); border-color:var(--or); background:var(--or-bg); }
+.danger-tag,.tag-danger{ color:var(--gules); border-color:var(--gules); background:var(--gules-bg); }
+
+/* §1 quick-reference helpers */
+.qr-meta{ font-size:8.4pt; line-height:1.5; margin:0 0 5pt; }
+.qr-meta strong{ color:var(--rubric-deep); }
+.qr-cols{ columns:2; column-gap:16pt; font-size:7.9pt; line-height:1.42; }
+ol.goals{ margin:0 0 5pt; padding-left:15pt; font-size:8.2pt; line-height:1.36; }
+ul.reminders{ margin:0; padding-left:13pt; font-size:8pt; line-height:1.36; }
+.namebar{ display:flex; justify-content:space-between; gap:10pt; align-items:flex-end;
+  border-bottom:1pt solid var(--gold); padding-bottom:3pt; margin-bottom:5pt; }
+.namebar .nm{ font-family:'Cardo',serif; font-weight:700; font-size:10.5pt; color:var(--rubric-deep); }
+.namebar .nm small{ display:block; font-weight:400; font-size:8pt; color:var(--ink-soft);
+  font-style:italic; font-family:'IM Fell English',serif; }
+.namebar .st{ text-align:right; font-size:7.6pt; color:var(--ink-soft); line-height:1.4; }
+
+/* ============================================================
+   FIXED PAGES — covers, TOC, half-titles, notes, colophon
+   ============================================================ */
+.center-col{ height:100%; display:flex; flex-direction:column; }
+
+/* ---- COVERS ---- */
+.cover{ position:relative; height:100%; }
+.cover .ti{ font-family:'UnifrakturCook','Cardo',serif; color:var(--rubric);
+  line-height:.96; }
+.cover .kick{ font-family:'IM Fell English SC',serif; letter-spacing:.26em;
+  text-transform:uppercase; }
+.cover .by{ font-family:'IM Fell English','Cardo',serif; font-style:italic; }
+.cover .cross{ font-size:20pt; }
+
+/* variant A — map full-bleed */
+.cover--map{ display:flex; flex-direction:column; }
+.cover--map .mapwrap{ position:absolute; inset:-44px -38px; overflow:hidden; }
+.cover--map .mapwrap img{ width:100%; height:100%; object-fit:cover;
+  filter:sepia(.55) contrast(1.04) brightness(.96); opacity:.92; }
+.cover--map .scrim{ position:absolute; inset:-44px -38px;
+  background:linear-gradient(180deg, rgba(244,236,216,.86) 0%, rgba(244,236,216,.34) 34%, rgba(43,34,24,.34) 70%, rgba(43,34,24,.7) 100%); }
+.cover--map .cap{ position:relative; margin:14pt 30pt 0; padding:9pt 8pt 11pt;
+  text-align:center; background:linear-gradient(rgba(244,236,216,.94),rgba(244,236,216,.88));
+  border:1pt solid var(--gold); outline:.5pt solid var(--gold); outline-offset:3px;
+  box-shadow:0 4px 14px -4px rgba(43,34,24,.5); }
+.cover--map .cap .kick{ color:var(--rubric-deep); font-size:7.6pt; }
+.cover--map .cap .cross{ color:var(--rubric); }
+.cover--map .cap .ti{ font-size:34pt; margin:5pt 0 1pt; }
+.cover--map .foot{ position:relative; margin-top:auto; text-align:center;
+  color:var(--parchment); padding-bottom:6pt; }
+.cover--map .foot .by{ color:#f4ecd8; font-size:10.5pt; text-shadow:0 1px 3px rgba(0,0,0,.5); }
+.cover--map .foot .yr{ font-family:'IM Fell English SC',serif; letter-spacing:.24em;
+  font-size:8pt; color:#e9c97a; margin-top:4pt; }
+
+/* variant B — typographic */
+.cover--type{ text-align:center; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:0; }
+.cover--type .cross{ color:var(--gold); font-size:30pt; }
+.cover--type .kick{ color:var(--gold); font-size:8.5pt; margin-top:10pt; }
+.cover--type .ti{ font-size:46pt; margin:8pt 0; }
+.cover--type .frabar{ width:62%; height:0; border-top:1pt solid var(--gold);
+  box-shadow:0 3pt 0 -1.8pt var(--gold-soft); margin:6pt 0 10pt; }
+.cover--type .by{ color:var(--ink-soft); font-size:11pt; }
+.cover--type .yr{ font-family:'IM Fell English SC',serif; letter-spacing:.24em;
+  font-size:8.5pt; color:var(--rubric); margin-top:14pt; }
+
+/* variant C — ruled chancery frame */
+.cover--frame{ padding:0; }
+.cover--frame .fr{ height:100%; border:1.4pt solid var(--gold);
+  outline:.6pt solid var(--gold); outline-offset:5px; padding:22pt 18pt;
+  display:flex; flex-direction:column; align-items:center; text-align:center; }
+.cover--frame .cross{ color:var(--rubric); font-size:22pt; }
+.cover--frame .kick{ color:var(--gold); font-size:8pt; margin-top:6pt; }
+.cover--frame .ti{ font-size:38pt; margin:12pt 0; }
+.cover--frame .fdiv{ display:flex; align-items:center; gap:8px; color:var(--rubric);
+  width:70%; margin:4pt 0; }
+.cover--frame .fdiv::before,.cover--frame .fdiv::after{ content:""; flex:1;
+  border-top:1pt solid var(--gold); }
+.cover--frame .by{ color:var(--ink-soft); font-size:10.5pt; margin-top:8pt; max-width:80%; }
+.cover--frame .yr{ font-family:'IM Fell English SC',serif; letter-spacing:.22em;
+  font-size:8pt; color:var(--rubric); margin-top:auto; }
+
+/* ---- TOC ---- */
+.toc-page .toc-head{ text-align:center; margin-bottom:10pt; }
+.toc-page .toc-head .cross{ color:var(--rubric); font-size:15pt; }
+.toc-page .toc-head .ti{ font-family:'UnifrakturCook',serif; color:var(--rubric);
+  font-size:24pt; margin:2pt 0; }
+.toc-page .toc-head .by{ font-family:'IM Fell English',serif; font-style:italic;
+  font-size:8.5pt; color:var(--ink-soft); }
+.toc-list{ list-style:none; margin:8pt 0 0; padding:0; }
+.toc-list li{ display:flex; align-items:baseline; gap:6px; margin:0 0 6.5pt;
+  font-family:'Cardo',serif; font-size:9.5pt; }
+.toc-list .rn{ font-family:'IM Fell English SC',serif; color:var(--rubric);
+  font-size:8.5pt; width:34px; flex:none; letter-spacing:.05em; }
+.toc-list .tt{ color:var(--ink); }
+.toc-list .dots{ flex:1; border-bottom:.6pt dotted var(--sepia-line);
+  transform:translateY(-3px); }
+.toc-list .pg{ font-family:'IM Fell English SC',serif; color:var(--gold);
+  font-size:8.5pt; }
+.toc-list li.part{ margin-top:9pt; }
+.toc-list li.part .tt{ font-family:'IM Fell English SC',serif; color:var(--rubric-deep);
+  letter-spacing:.05em; text-transform:uppercase; font-size:8.5pt; }
+
+/* ---- half-title (Part divider) ---- */
+.halftitle{ height:100%; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; text-align:center; }
+.halftitle .cross{ color:var(--gold); font-size:24pt; }
+.halftitle .pt{ font-family:'IM Fell English SC',serif; letter-spacing:.28em;
+  text-transform:uppercase; color:var(--gold); font-size:9pt; margin-top:14pt; }
+.halftitle .ti{ font-family:'UnifrakturCook',serif; color:var(--rubric);
+  font-size:34pt; margin:8pt 0; line-height:1; }
+.halftitle .by{ font-family:'IM Fell English',serif; font-style:italic;
+  color:var(--ink-soft); font-size:10pt; max-width:74%; }
+.halftitle .frabar{ width:46%; height:0; border-top:1pt solid var(--gold);
+  box-shadow:0 3pt 0 -1.8pt var(--gold-soft); margin:12pt 0; }
+
+/* ---- ruled notes page ---- */
+.notes-page{ height:100%; display:flex; flex-direction:column; }
+.notes-page .nh{ font-family:'IM Fell English SC',serif; letter-spacing:.06em;
+  color:var(--parchment); background:var(--rubric); border:.75pt solid var(--rubric-deep);
+  padding:3pt 8pt 2.5pt; font-size:11pt; margin-bottom:8pt; }
+.notes-page .nh::before{ content:"✠  "; color:var(--gold-soft); }
+.notes-page .rules{ flex:1; background:repeating-linear-gradient(to bottom,
+  transparent 0, transparent 21px, var(--sepia-line-2) 21px, var(--sepia-line-2) 21.6px); }
+
+/* ---- colophon (back cover) ---- */
+.colophon{ height:100%; display:flex; flex-direction:column; align-items:center;
+  text-align:center; }
+.colophon .cross{ color:var(--rubric); font-size:18pt; margin-top:6pt; }
+.colophon .mark{ font-family:'UnifrakturCook',serif; color:var(--rubric);
+  font-size:20pt; margin:10pt 0 6pt; line-height:1.05; }
+.colophon .body{ font-family:'IM Fell English','Cardo',serif; font-style:italic;
+  color:var(--ink-soft); font-size:9pt; line-height:1.5; max-width:78%; }
+.colophon .fdiv{ display:flex; align-items:center; gap:8px; color:var(--rubric);
+  width:56%; margin:14pt 0; }
+.colophon .fdiv::before,.colophon .fdiv::after{ content:""; flex:1;
+  border-top:1pt solid var(--gold); }
+.colophon .imprint{ margin-top:auto; font-family:'IM Fell English SC',serif;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--gold); font-size:7.5pt;
+  line-height:1.8; padding-bottom:4pt; }
+.colophon .imprint .keys{ color:var(--rubric); }
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print{
+  body{ background:#fff; }
+  #stage{ padding:0; }
+  .stage-rail,.stage-note,.no-print{ display:none!important; }
+  .flowdoc{ display:block; gap:0; }
+  .spread{ display:block; box-shadow:none; }
+  .imp-sheet,.bleed,.leaf{ box-shadow:none; }
+}
