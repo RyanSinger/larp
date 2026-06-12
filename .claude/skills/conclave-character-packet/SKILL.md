@@ -141,9 +141,11 @@ python3 SKILL_DIR/scripts/build_content.py conclave.db booklet/booklet-content.j
 
 ### 6. Render and verify the PDF
 ```
-node SKILL_DIR/scripts/generate_pdf.cjs booklet/print-shop.html "booklet/Reference-Booklet.pdf"
+node SKILL_DIR/scripts/generate_pdf.cjs booklet/print-shop.html
 ```
-The script fails loudly unless the PDF page count equals the live page count and is
+The output filename is derived from the PC named on the cover, e.g.
+`booklet/Cardinal della Rovere Reference Booklet.pdf`. Pass a second argument to
+override it. The script fails loudly unless the PDF page count equals the live page count and is
 a multiple of four. (This is the exact failure mode that once silently dropped the
 worksheets: a stale or truncated browser "Save as PDF". Always use this script.)
 
