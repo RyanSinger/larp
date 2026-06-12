@@ -1,69 +1,42 @@
-# Conclave 1492: Cardinal Sanseverino
+# Temptemus Papam: Character Packet Toolkit
 
-Player materials for **Cardinal Federico (da Montefeltro) Sanseverino** in
-*Temptemus Papam*, a papal election LARP set in 1492. The simulation runs
-June 8 through 11, 2026 at Lighthaven.
+Build player support materials for **Temptemus Papam**, a papal election LARP set
+in 1492, for any character. From a player's packet (their character sheet plus the
+shared game documents) this toolkit produces a SQLite knowledge database and a
+print-ready reference booklet in a Renaissance chancery design.
+
+This repository is character-agnostic. Federico Sanseverino's filled-in packet
+lives on the `sanseverino` branch; `main` is a clean starting point for a new
+player.
 
 ## What's here
 
-### Printed materials (the main product)
+- **`.claude/skills/conclave-character-packet/`** — the skill that ingests a
+  character's packet and produces the database and a print-ready booklet
+  (13 reference sections plus 6 worksheets). It bundles its own rendering engine,
+  stylesheet, embedded fonts, and the game map, so it is self-contained.
+- **`uploads/`** — the shared game documents, identical for every player: rules,
+  facts about the world, timeline, character list, quickstart, and the map. Add
+  your own character sheet PDF here.
+- **Design system** — `conclave.css`, `colors_and_type.css`, `fonts/`, the
+  `SKILL.md` design guide, `preview/` specimen cards, and `ui_kits/` components,
+  for building additional handouts in the same brand.
 
-**`reference-booklet.html`** is a printable reference booklet with 13 sections:
-personal quick reference, negotiation profiles for all 40 characters, mercenary
-specs, marriage candidates, possessions and courtiers, forms of address, family
-relationships, rules mechanics quick reference, pronunciation guide, game
-logistics, starting state checklist, and a map of Europe in 1492.
+## Quick start
 
-**`worksheets.html`** contains six writable tracking sheets: mercenary deals,
-marriage deals, vote tracker (9 votes across 3 days), a favors and promises
-ledger with money tracking, a combined canonization and war tracker, and an
-asset status and letters log.
+1. Drop your character sheet PDF into `uploads/`.
+2. Invoke the `conclave-character-packet` skill (type `/conclave-character-packet`)
+   and follow its steps. It builds `conclave.db`, populates it from the source
+   documents, and generates a `booklet/` directory with a verified PDF.
+3. Print the booklet (the skill's `generate_pdf.cjs` exports and verifies it).
 
-Both have **`-print.html`** variants that trigger the print dialog on open
-for quick PDF export.
-
-### Game knowledge database
-
-**`conclave.db`** is a SQLite database with everything needed to support play:
-
-| Table | Rows | Contents |
-|---|---|---|
-| characters | 40 | All PCs with goals, opinions, negotiation notes |
-| mercenaries | 26 | 15 experienced + 11 fledgling with specs and priorities |
-| marriage_candidates | 27 | 14 brides, 12 grooms, 1 nunnery with ranks |
-| possessions | 12 | Items with values and negotiation uses |
-| courtiers | 6 | Specialists with deployment ideas |
-| goals | 9 | Ranked priorities with sub-goals |
-| rules | 38 | Condensed game mechanics |
-| vatican_offices | 13 | Offices, salaries, current holders, powers |
-| territories | 23 | Italian war map with defense and sack/tax values |
-| ports | 28 | Sea ports with defense, quality, tax |
-| monastic_orders | 4 | Orders with status gain methods |
-| forms_of_address | 23 | Proper and rude forms for every rank |
-| families | 15 | Major families with connection to Federico |
-| world_facts | 25 | Geopolitical situation in 1492 |
-| timeline | 23 | Key events from 1095 to 1492 |
-| logistics | 15 | Schedule, locations, signals, starting state |
-| messages | 11+ | Discord exchanges with analysis and strategic notes |
-| strategic_insights | 30 | Principles, commitments, intel, phased strategy |
-
-### Design system
-
-The `conclave.css`, `colors_and_type.css`, and `fonts/` directory provide
-Renaissance chancery styling. The `preview/` folder has specimen cards and
-`ui_kits/` has reusable components for building additional handouts.
-
-### Source materials
-
-The `uploads/` directory holds the original game documents: character sheet
-(40 pages), rules (42 pages), quickstart slides, character list, timeline,
-world facts, and the map of Europe in 1492.
+The database is the single source of truth. Re-run the build whenever the game
+state changes and you get a correct, complete booklet.
 
 ## The game
 
-~40 players take real historical figures (cardinals, functionaries, monarchs)
-each with private goals, resources, and secrets. 25 cardinals vote for a new
-pope (13 votes for majority) over up to 9 rounds across 3 days. If no pope
-is elected by vote 9, the Ottomans invade Europe and a war phase begins.
-Day 4 is post-war negotiation. There is no single winner; each player pursues
-their own goals.
+About 40 players take real historical figures (cardinals, functionaries,
+monarchs), each with private goals, resources, and secrets. 25 cardinals vote for
+a new pope over up to 9 rounds across 3 days. If no pope is elected by the ninth
+vote, a war phase begins. There is no single winner; each player pursues their own
+goals.
