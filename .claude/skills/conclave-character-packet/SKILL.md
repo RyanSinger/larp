@@ -69,8 +69,8 @@ file feeds which table. In short:
   `families.our_connection`, and the PC-relative framing on every `characters`,
   `mercenaries`, and `marriage_candidates` row (`our_opinion`, `what_they_want`,
   `what_we_want`, `what_we_offer`, `what_to_avoid`, `is_ally`, `is_contact`,
-  `priority`, `relation_to_pc`). Flag the figures who deserve a full Section 2
-  profile card with `is_key=1`.
+  `priority`, `relation_to_pc`). Set `papabile=1` on every papal contender and
+  `is_ally=1` on every ally; the booklet uses those to decide who is important.
 - **The `pc` row drives the cover and contents page.** Set `name`, `styled_name`
   (the honorific form, e.g. "His Eminence Cardinal ..." or "His Most Christian
   Majesty ..."), `cover_title` (the big cover line, may contain `<br>`), and
@@ -135,12 +135,14 @@ character (and read `reference/design-house-rules.md` first).
   Section numbers and the table of contents are derived automatically, so any
   reordering or subset stays correctly numbered and paged. Add a new profile by
   editing `_profile()` in `build_content.py`.
-- **Section 2 curation.** Full profile cards go to characters flagged
-  `is_key=1`; everyone else falls to the **Section 3** roster tables. If no
-  character is flagged `is_key` (an un-curated DB), Section 2 falls back to all
-  `is_ally=1` or `papabile=1` characters. Curate by setting `is_key` on the
-  dozen or so figures who deserve a full card; leave it unset for a complete but
-  busier booklet.
+- **Section 2 importance is computed, not flagged.** Full profile cards go to
+  every papal contender (`papabile=1`, allies *and* rivals) plus your allied
+  cardinals, monarchs, and functionaries (`is_ally=1` and `role` not NPC).
+  Importance is not the same as alliance: the chief rivals on the ballot earn a
+  full card so you can study them. Family relatives (`role='NPC'`) stay in
+  Section 8. Everyone else falls to the **Section 3** roster tables. So the lever
+  you set is the data itself: mark `papabile` and `is_ally` accurately and the
+  right people surface.
 - **Section 8 family tree.** A monospace family-tree diagram is generated from
   the `siblings` table, grouped by mother (multiple marriages read correctly) and
   split sister/brother, followed by a sibling needs table and the family

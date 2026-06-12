@@ -145,14 +145,14 @@ def _profile_card(c):
 
 
 def _key_ids(con):
-    """Character ids that earn a full profile card in Section 2. Author curation
-    wins: if any character is flagged is_key, use exactly those. Otherwise fall
-    back to every ally and papabile (so an un-curated DB still produces a booklet)."""
-    if "is_key" in cols(con, "characters"):
-        keyed = rows(con, "select id from characters where is_key=1")
-        if keyed:
-            return {r["id"] for r in keyed}
-    return {r["id"] for r in rows(con, "select id from characters where is_ally=1 or papabile=1")}
+    """Character ids that earn a full profile card in Section 2. The skill judges
+    importance, not the author: every papal contender (allies AND rivals) plus your
+    allied cardinals, monarchs, and functionaries. Family relatives (role NPC) are
+    excluded here; they belong to Section 8. Importance is not the same as alliance,
+    so the chief rivals on the papal ballot get full cards too."""
+    return {r["id"] for r in rows(
+        con, "select id from characters where (papabile=1 or is_ally=1) "
+             "and (role is null or role != 'NPC')")}
 
 
 def sec_key_profiles(con):

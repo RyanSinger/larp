@@ -85,7 +85,6 @@ CREATE TABLE characters (
   papabile INTEGER DEFAULT 0,
   is_ally INTEGER DEFAULT 0,
   is_contact INTEGER DEFAULT 0,
-  is_key INTEGER DEFAULT 0,     -- curation: 1 = full profile card in Section 2. If no character is flagged, Section 2 falls back to all allies + papabile.
   monastic_order TEXT,
   pronunciation TEXT,
   our_opinion TEXT,
