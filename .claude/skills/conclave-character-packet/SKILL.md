@@ -164,11 +164,20 @@ If Chromium is not installed, install it once:
 node "$(npm root -g)/playwright/cli.js" install chromium
 ```
 
-### 7. Iterate
+### 7. Iterate, and keep the packet alive during play
 To change the booklet, edit the **database**, then re-run steps 5 and 6. Do not
 hand-edit `booklet-content.js`; it is generated. Edit `booklet-engine.js` /
 `booklet.css` only for structural design changes that should apply to every
 character (and read `reference/design-house-rules.md` first).
+
+The first build is a foundation, not the finished product. The most useful packet
+is the one that grows as the game unfolds: log exchanges in `messages` and add
+`strategic_insights` (commitments made, intel gathered, phased strategy, shifting
+alliances), then regenerate. Strategic insights are the single biggest driver of a
+booklet's usefulness at the table, and they carry the parts of the game the
+character roster cannot, above all a monarch's off-roster world (Electors, foreign
+kings, debts). A thorough first pass is good; a packet maintained through play is
+what becomes a true playbook.
 
 ## Notes
 

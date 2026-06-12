@@ -35,6 +35,27 @@ def main(argv):
     if not con.execute("select count(*) from characters where is_ally=1 or papabile=1").fetchone()[0]:
         warns.append("no characters flagged is_ally or papabile -> Section 2 will be empty")
 
+    # Advisory notes on curation and depth (quality, not errors)
+    notes = []
+    char_cols = [r[1] for r in con.execute("PRAGMA table_info(characters)")]
+    if "is_key" not in char_cols:
+        notes.append("characters has no is_key column: this DB predates the curation flag, so "
+                     "Section 2 falls back to all papabili + allies. Migrate to the current schema "
+                     "and flag ~10-14 figures with is_key for a tighter, play-usable section.")
+    else:
+        nkey = con.execute("select count(*) from characters where is_key=1").fetchone()[0]
+        if nkey == 0:
+            notes.append("no characters flagged is_key: Section 2 will render every papabile and "
+                         "ally (a busier, uncurated set). Flag ~10-14 with is_key for a tighter section.")
+        elif nkey > 16:
+            notes.append(f"is_key flags {nkey} characters: consider trimming to ~10-14 so Section 2 "
+                         "stays usable at the table.")
+    ins = counts.get("strategic_insights", 0)
+    if ins < 6:
+        notes.append(f"only {ins} strategic_insights: these are the heart of the playbook "
+                     "(commitments, phased strategy, and the off-roster situation a monarch's game "
+                     "depends on). Author more, and keep adding them as the game unfolds.")
+
     print()
     if warns:
         print("WARNINGS:")
@@ -42,6 +63,10 @@ def main(argv):
             print(f"  ! {w}")
     else:
         print("OK: all required tables present and populated.")
+    if notes:
+        print("\nNOTES (quality):")
+        for n in notes:
+            print(f"  - {n}")
     con.close()
 
 
