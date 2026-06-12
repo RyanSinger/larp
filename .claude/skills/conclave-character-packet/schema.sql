@@ -3,20 +3,23 @@
 -- ============================================================
 -- One SQLite database per player character (PC). Two kinds of table:
 --
---   SHARED (identical for every PC, taken from the rules / world-facts /
---   timeline / character-list / map source files):
+--   SHARED (identical for every PC; copy from an existing packet with
+--   scripts/copy_shared.py instead of re-extracting from the PDFs):
 --     forms_of_address, logistics, monastic_orders, ports, rules,
 --     territories, timeline, vatican_offices, world_facts,
---     and the BASE facts (name/age/rank/faction) of characters,
---     mercenaries, marriage_candidates.
+--     the BASE facts (name/age/rank/role/faction/papabile/pronunciation) of
+--     characters, the combat specs of mercenaries, and the roster of families.
 --
---   PC-RELATIVE (framed from THIS character's point of view, taken from
---   the PC's own character sheet — "our/we/you" always means the PC):
---     pc, goals, possessions, courtiers, siblings, families.our_connection,
---     relationships, strategic_insights, messages, and the
---     our_opinion / what_they_want / what_we_want / what_we_offer /
---     what_to_avoid / is_ally / is_contact framing on characters,
---     mercenaries.natural_buyers/priority, marriage_candidates.relation_to_pc.
+--   PC-RELATIVE (framed from THIS character's point of view, authored from the
+--   PC's own character sheet — "our/we/you" always means the PC):
+--     pc, goals, possessions, courtiers, siblings, relationships,
+--     strategic_insights, messages, claims, forces; the PC's own
+--     marriage_candidates (their kin to marry off, NOT a shared roster);
+--     families.our_connection; the our_opinion / what_we_want / what_we_offer /
+--     what_to_avoid / is_ally / is_contact / is_key framing on characters; and
+--     mercenaries.natural_buyers / priority / notes.
+--     (what_they_want and notes on characters are objective enough to carry
+--     over as a baseline; copy_shared does so.)
 --
 -- Convention: keep all first-person framing in the PC's voice (second
 -- person "you"), period honorifics exact, explanations in clear English.
