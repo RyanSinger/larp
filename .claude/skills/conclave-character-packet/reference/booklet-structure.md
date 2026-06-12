@@ -11,7 +11,7 @@ Reference sections flow continuously; **each worksheet starts on a fresh page**
 | # | Section | Source table(s) | Form |
 |---|---|---|---|
 | 1 | Personal Quick Reference | `pc`, `goals`, allied `characters` | namebar + qr-meta + ranked goals + two-column ally list + reminders |
-| 2 | Key Character Profiles | `characters` where (`papabile` or `is_ally`) and role not NPC | `.profile` cards: They want / You want / You offer / Avoid / Your opinion |
+| 2 | Key Character Profiles | `characters` where `is_key` (skill-judged from the sheet; fallback `(papabile or is_ally) and role not NPC`) | `.profile` cards: They want / You want / You offer / Avoid / Your opinion |
 | 3 | All Other Characters | `characters` not in Section 2, by role | `.t-tight` tables (Cardinals, Functionaries, Monarchs, Other) |
 | 4 | Mercenary Reference | `mercenaries` | Experienced + Fledgling tables |
 | 5 | Marriage Candidates | `marriage_candidates` | Brides + Grooms (+ Nunnery) tables |

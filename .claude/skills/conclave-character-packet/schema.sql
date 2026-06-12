@@ -85,6 +85,7 @@ CREATE TABLE characters (
   papabile INTEGER DEFAULT 0,
   is_ally INTEGER DEFAULT 0,
   is_contact INTEGER DEFAULT 0,
+  is_key INTEGER DEFAULT 0,     -- full Section 2 profile card. Set by the skill while reading the character sheet: the ~dozen figures this PC will deal with most, allies AND chief rivals. If none are set, Section 2 falls back to all papabili and allies.
   monastic_order TEXT,
   pronunciation TEXT,
   our_opinion TEXT,

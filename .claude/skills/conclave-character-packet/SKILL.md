@@ -70,7 +70,16 @@ file feeds which table. In short:
   `mercenaries`, and `marriage_candidates` row (`our_opinion`, `what_they_want`,
   `what_we_want`, `what_we_offer`, `what_to_avoid`, `is_ally`, `is_contact`,
   `priority`, `relation_to_pc`). Set `papabile=1` on every papal contender and
-  `is_ally=1` on every ally; the booklet uses those to decide who is important.
+  `is_ally=1` on every ally.
+- **Judge who matters and flag `is_key=1` on them.** As you read the character
+  sheet, decide who this PC will actually deal with most over the game: their
+  patron and inner circle, their closest allied cardinals, the papal contenders
+  (allies *and* the chief rivals they must outmaneuver), and the great powers who
+  shape their fate. Flag those `is_key=1`, aiming for a readable set of roughly
+  ten to fourteen so Section 2 stays useful at the table during play. Importance
+  is not alliance: include the rivals you must study, and leave family relatives
+  (`role='NPC'`) to Section 8. This judgment is the skill's job, not the player's;
+  if you flag nobody, the booklet falls back to all papabili and allies.
 - **The `pc` row drives the cover and contents page.** Set `name`, `styled_name`
   (the honorific form, e.g. "His Eminence Cardinal ..." or "His Most Christian
   Majesty ..."), `cover_title` (the big cover line, may contain `<br>`), and
@@ -135,14 +144,15 @@ character (and read `reference/design-house-rules.md` first).
   Section numbers and the table of contents are derived automatically, so any
   reordering or subset stays correctly numbered and paged. Add a new profile by
   editing `_profile()` in `build_content.py`.
-- **Section 2 importance is computed, not flagged.** Full profile cards go to
-  every papal contender (`papabile=1`, allies *and* rivals) plus your allied
-  cardinals, monarchs, and functionaries (`is_ally=1` and `role` not NPC).
-  Importance is not the same as alliance: the chief rivals on the ballot earn a
-  full card so you can study them. Family relatives (`role='NPC'`) stay in
-  Section 8. Everyone else falls to the **Section 3** roster tables. So the lever
-  you set is the data itself: mark `papabile` and `is_ally` accurately and the
-  right people surface.
+- **Section 2 is the skill's importance judgment.** Full profile cards go to the
+  characters flagged `is_key` during ingestion: the dozen-or-so figures this PC
+  will deal with most, allies *and* chief rivals. The point of a tight set is
+  usability in play, so keep it to roughly ten to fourteen and let everyone else
+  fall to the **Section 3** roster tables (where they are still one scannable
+  row). If a database has nothing flagged, Section 2 falls back to all papabili
+  and allies (`(papabile or is_ally) and role not NPC`), a complete but busier
+  default. Importance is not alliance: a papal rival you must beat belongs in
+  Section 2; a friendly uncle belongs in Section 8.
 - **Section 8 family tree.** A monospace family-tree diagram is generated from
   the `siblings` table, grouped by mother (multiple marriages read correctly) and
   split sister/brother, followed by a sibling needs table and the family

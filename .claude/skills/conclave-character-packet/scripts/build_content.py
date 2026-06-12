@@ -145,11 +145,15 @@ def _profile_card(c):
 
 
 def _key_ids(con):
-    """Character ids that earn a full profile card in Section 2. The skill judges
-    importance, not the author: every papal contender (allies AND rivals) plus your
-    allied cardinals, monarchs, and functionaries. Family relatives (role NPC) are
-    excluded here; they belong to Section 8. Importance is not the same as alliance,
-    so the chief rivals on the papal ballot get full cards too."""
+    """Section 2 full-profile set. Primary path: the figures the skill flagged
+    is_key while reading the character sheet, the people this PC will deal with
+    most (allies AND the chief rivals they must outmaneuver), kept to a readable
+    dozen or so so the section stays useful at the table. Fallback for a DB with
+    nothing flagged: every papal contender and ally who is not a family NPC."""
+    if "is_key" in cols(con, "characters"):
+        keyed = rows(con, "select id from characters where is_key=1")
+        if keyed:
+            return {r["id"] for r in keyed}
     return {r["id"] for r in rows(
         con, "select id from characters where (papabile=1 or is_ally=1) "
              "and (role is null or role != 'NPC')")}
