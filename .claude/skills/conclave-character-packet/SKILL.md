@@ -29,6 +29,7 @@ re-running the build after any DB edit reproduces a correct, complete booklet.
 schema.sql              generalized 23-table schema (pc + 20 game tables + claims/forces)
 scripts/
   init_db.py            create an empty DB from schema.sql
+  copy_shared.py        seed the shared game world from an existing packet DB
   check_db.py           row-count + missing/empty-table report
   build_content.py      DB  ->  booklet/booklet-content.js  (the generator)
   generate_pdf.cjs      print-shop HTML  ->  verified PDF (headless Chromium)
@@ -55,14 +56,35 @@ Find the character sheet PDF in `uploads/` (named for the character). Confirm wi
 the user which character this packet is for. Everything framed as "you / we / our"
 means this PC.
 
-### 2. Create the database
+### 2. Create the database and seed the shared world
 ```
 python3 SKILL_DIR/scripts/init_db.py conclave.db
 ```
+The game world is identical for every player. If a finished packet already exists
+(for example another character's `conclave.db`), seed the shared tables from it
+instead of re-extracting them from the PDFs:
+```
+python3 SKILL_DIR/scripts/copy_shared.py OTHER_CHARACTER/conclave.db conclave.db
+```
+This fills the world tables, the base character facts, the mercenary specs, and
+the family roster, and leaves every PC-relative column blank for you to author.
+Then relabel any relatives that carry the other character's framing (a name like
+"Uncle Giovanni della Rovere" may be the new PC's brother).
 
-### 3. Populate it from the source files
-Read the PDFs in `uploads/` and INSERT rows. See `reference/sources.md` for which
-file feeds which table. In short:
+### 3. Populate the PC-relative content from the character sheet
+Read the PCs sheet and INSERT or UPDATE rows. See `reference/sources.md` for
+which file feeds which table.
+
+**Reading the PDFs.** The built-in file reader cannot render these PDFs (it needs
+poppler, which is not installed), and `pdfminer`/`pypdf` fail because the
+environment's `cryptography` binding is broken. Use PyMuPDF, which is
+self-contained:
+```
+python3 -m pip install --quiet pymupdf
+python3 -c "import fitz,sys; print(''.join(p.get_text() for p in fitz.open(sys.argv[1])))" SHEET.pdf
+```
+
+In short, the character sheet supplies:
 
 - **The PC's character sheet** is the spine. It fills `pc` (one row), `goals`,
   `possessions`, `courtiers`, `siblings`, `relationships`, `strategic_insights`,
@@ -94,8 +116,10 @@ file feeds which table. In short:
 - **The rules PDF** fills `rules`, `vatican_offices`, `monastic_orders`,
   `forms_of_address`, `ports`, `territories`, `logistics`.
 - **The world-facts PDF** fills `world_facts`; **the timeline PDF** fills `timeline`.
-- **`mercenaries` and `marriage_candidates`** rosters come from the rules /
-  character materials; their priority/buyer/relation framing comes from the sheet.
+- **`marriage_candidates`** are the PC's OWN brides and grooms (their kin to marry
+  off), listed on the sheet, not a shared roster. Rebuild them per character. The
+  **`mercenaries`** roster is shared; only its priority/buyer/notes framing is the
+  PC's.
 
 Use the PC's voice throughout (second person "you"), exact period honorifics,
 explanations in plain English, **no dashes as separators, no emoji** (use colons,

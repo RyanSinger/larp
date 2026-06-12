@@ -10,7 +10,7 @@ seat** (the sheet). Below is the mapping from source to database table.
 |---|---|---|
 | `Character Sheet - <Name>.pdf` | PC-specific | `pc` (identity, `role`, cover fields), `goals`, `possessions`, `courtiers`, `siblings`, `relationships`, `strategic_insights`, and all PC-relative framing on `characters` / `mercenaries` / `marriage_candidates`; `families.our_connection`. For a **Monarch** also `claims` (thrones and territorial claims) and `forces` (royal armies, fleets, commanders). |
 | `... Character List.pdf` | shared | base facts for `characters` (name, age, rank, role, faction, location, papabile) |
-| `... Rules ....pdf` | shared | `rules`, `vatican_offices`, `monastic_orders`, `forms_of_address`, `ports`, `territories`, `logistics`; mercenary and marriage roster mechanics |
+| `... Rules ....pdf` | shared | `rules`, `vatican_offices`, `monastic_orders`, `forms_of_address`, `ports`, `territories`, `logistics`; the mercenary roster and marriage mechanics |
 | `... Facts About the World.pdf` | shared | `world_facts` |
 | `... Timeline ....pdf` | shared | `timeline` |
 | `... Quickstart.pdf` | shared | reinforces rules, logistics, the schedule and signals |
@@ -26,20 +26,28 @@ Even within one table the columns split:
   what_to_avoid, is_ally, is_contact, is_key (the skill's judgment, made while
   reading the sheet, of who earns a full Section 2 profile card: allies and chief
   rivals alike).
-- `mercenaries`: **shared** = specs (faction, experience, specializes_in,
-  wont_attack, num_armies, min_price). **PC-relative** = natural_buyers, priority,
-  and the angle in notes.
-- `marriage_candidates`: **shared** = name, type, family, rank.
-  **PC-relative** = relation_to_pc, the angle in notes.
-- `families`: **shared** = name, seat, faction, key_members.
+- `mercenaries`: **shared** = the roster and specs (faction, experience,
+  specializes_in, wont_attack, num_armies, min_price). **PC-relative** =
+  natural_buyers, priority, notes.
+- `marriage_candidates`: **entirely PC-specific.** These are the PC's OWN brides
+  and grooms (their kin to marry off), listed on the sheet. Different for every
+  character, so rebuild them; do not copy them across.
+- `families`: **shared** = name, seat, faction, key_members, notes.
   **PC-relative** = our_connection.
+- `what_they_want` and `notes` on `characters` are objective enough to carry over
+  as a starting point (`copy_shared.py` does), then refine from the new sheet.
 
 ## Porting to a new character
 
-When the world tables (`rules`, `world_facts`, `timeline`, `forms_of_address`,
-`ports`, `territories`, `vatican_offices`, `monastic_orders`, and the base facts of
-`characters` / `mercenaries` / `marriage_candidates`) are already captured for one
-character, they can be **copied** into the new DB unchanged. Only the PC-relative
-content and the `pc` row need to be rebuilt from the new character's sheet. (Beware:
-the new sheet may reveal different secrets about the same world figures, so review
-`notes` fields.)
+When a finished packet already exists, seed the new database from it with
+`scripts/copy_shared.py SOURCE_DB TARGET_DB` instead of re-extracting the world
+from the PDFs. It copies the nine world tables verbatim, the base character facts
+(plus `what_they_want` and `notes` as a baseline), the mercenary specs, and the
+family roster, and leaves every PC-relative column blank.
+
+Two cautions after copying:
+- A shared name or title may still carry the source character's framing (a name
+  like "Uncle Giovanni della Rovere" or "Aunt Costanza" is relative to that PC).
+  Relabel those relatives for the new character.
+- A new sheet may reveal different secrets about the same world figures, so review
+  the copied `notes` and `what_they_want` and adjust.
