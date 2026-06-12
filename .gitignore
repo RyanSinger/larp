@@ -1,2 +1,3 @@
 scraps/
 .playwright-mcp/
+__pycache__/

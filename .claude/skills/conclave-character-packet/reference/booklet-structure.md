@@ -11,13 +11,13 @@ Reference sections flow continuously; **each worksheet starts on a fresh page**
 | # | Section | Source table(s) | Form |
 |---|---|---|---|
 | 1 | Personal Quick Reference | `pc`, `goals`, allied `characters` | namebar + qr-meta + ranked goals + two-column ally list + reminders |
-| 2 | Key Character Profiles | `characters` where `is_ally` or `papabile` | `.profile` cards: They want / You want / You offer / Avoid / Your opinion |
-| 3 | All Other Characters | remaining `characters` by role | `.t-tight` tables (Cardinals, Functionaries, Monarchs, Other) |
+| 2 | Key Character Profiles | `characters` where `is_key` (else fallback: `is_ally` or `papabile`) | `.profile` cards: They want / You want / You offer / Avoid / Your opinion |
+| 3 | All Other Characters | `characters` not in Section 2, by role | `.t-tight` tables (Cardinals, Functionaries, Monarchs, Other) |
 | 4 | Mercenary Reference | `mercenaries` | Experienced + Fledgling tables |
 | 5 | Marriage Candidates | `marriage_candidates` | Brides + Grooms (+ Nunnery) tables |
 | 6 | Possessions & Courtiers | `possessions`, `courtiers` | two tables |
 | 7 | Forms of Address | `forms_of_address` | one table (proper + rude) |
-| 8 | Key Family Relationships | `siblings`, `families` | Direct family + family connections |
+| 8 | Key Family Relationships | `pc.house`, `siblings`, `families` | family-tree diagram + sibling needs table + family connections |
 | 9 | Rules Mechanics | `rules` grouped by category | one table per category |
 | 10 | Pronunciation Guide | `characters.pronunciation` | grouped by role |
 | 11 | Game Logistics | `logistics` | one table |

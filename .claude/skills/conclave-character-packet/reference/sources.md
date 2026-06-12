@@ -23,7 +23,7 @@ Even within one table the columns split:
 - `characters`: **shared** = name, title, surname, nickname, age, rank, role,
   faction, location, papabile, monastic_order, pronunciation.
   **PC-relative** = our_opinion, what_they_want, what_we_want, what_we_offer,
-  what_to_avoid, is_ally, is_contact.
+  what_to_avoid, is_ally, is_contact, is_key (full Section 2 profile card).
 - `mercenaries`: **shared** = specs (faction, experience, specializes_in,
   wont_attack, num_armies, min_price). **PC-relative** = natural_buyers, priority,
   and the angle in notes.

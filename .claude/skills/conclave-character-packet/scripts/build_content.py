@@ -144,19 +144,28 @@ def _profile_card(c):
     return "\n".join(out)
 
 
+def _key_ids(con):
+    """Character ids that earn a full profile card in Section 2. Author curation
+    wins: if any character is flagged is_key, use exactly those. Otherwise fall
+    back to every ally and papabile (so an un-curated DB still produces a booklet)."""
+    if "is_key" in cols(con, "characters"):
+        keyed = rows(con, "select id from characters where is_key=1")
+        if keyed:
+            return {r["id"] for r in keyed}
+    return {r["id"] for r in rows(con, "select id from characters where is_ally=1 or papabile=1")}
+
+
 def sec_key_profiles(con):
-    cs = rows(con, "select * from characters where is_ally=1 or papabile=1 order by "
-                   "(role='Cardinal') desc, is_ally desc, id")
+    ids = _key_ids(con)
+    allc = rows(con, "select * from characters order by (role='Cardinal') desc, is_ally desc, id")
+    cs = [c for c in allc if c["id"] in ids]
     body = "\n\n".join(_profile_card(c) for c in cs)
     return f'<h2>2. Key Character Profiles</h2>\n\n{body}'
 
 
-def _other_table(con, title, role):
-    cs = rows(con, "select * from characters where role=? and is_ally=0 and papabile=0 "
-                   "order by id", (role,))
-    extra = rows(con, "select * from characters where role=? and (is_ally=1 or papabile=1) "
-                      "and role!='Cardinal' order by id", (role,))
-    cs = cs + extra
+def _other_table(con, title, role, keyids):
+    cs = [c for c in rows(con, "select * from characters where role=? order by id", (role,))
+          if c["id"] not in keyids]
     if not cs:
         return ""
     head = (f'<h3>{title}</h3>\n<table class="t-tight">\n<tr>'
@@ -180,11 +189,12 @@ def _other_table(con, title, role):
 
 def sec_all_other(con):
     parts = ['<h2>3. All Other Characters</h2>']
+    keyids = _key_ids(con)
     for title, role in [("Remaining Cardinals", "Cardinal"),
                         ("Functionaries", "Functionary"),
                         ("Monarchs", "Monarch"),
                         ("Other Figures", "NPC")]:
-        t = _other_table(con, title, role)
+        t = _other_table(con, title, role, keyids)
         if t:
             parts.append(t)
     return "\n\n".join(parts)
@@ -287,17 +297,69 @@ def sec_forms(con):
     return parts[0] + "\n" + parts[1] + "\n" + "\n".join(body) + "\n</table>"
 
 
+def _family_tree(con):
+    """A scannable monospace family tree from the siblings table, grouped by
+    mother (so multiple marriages read correctly) and split sister/brother.
+    Header comes from pc.house, falling back to the PC name."""
+    sibs = rows(con, "select * from siblings order by id")
+    if not sibs:
+        return ""
+    pc = pc_row(con)
+    header = pc.get("house") or (pc.get("name") or "Your House")
+    lines = [esc(header)]
+    you = esc(pc.get("name") or "You")
+    lines.append(f" YOU: {you}" + (f", age {pc['age']}" if pc.get("age") else ""))
+
+    # group by mother, preserving first-seen order; collapse unknown mothers
+    # (e.g. "Unknown", "Unknown (earlier wife)") into one "earlier marriage" group
+    order, groups, disp = [], {}, {}
+    for s in sibs:
+        m = s.get("mother") or ""
+        k = "__earlier__" if "unknown" in m.lower() else m
+        if k not in groups:
+            order.append(k)
+            groups[k] = []
+            disp[k] = None if k == "__earlier__" else m
+        groups[k].append(s)
+
+    for k in order:
+        g = groups[k]
+        mother = disp[k]
+        is_full = any("full" in (s.get("relation") or "").lower() for s in g)
+        if k == "__earlier__":
+            par = " (by an earlier marriage)"
+        elif mother:
+            par = f" ({'mother' if is_full else 'stepmother'}: {esc(mother)})"
+        else:
+            par = ""
+        lines.append(" " + ("Full siblings" if is_full else "Half-siblings") + par)
+        for word, needle in (("Sisters", "sister"), ("Brothers", "brother")):
+            names = []
+            for s in g:
+                if needle in (s.get("relation") or "").lower():
+                    nm = esc((s.get("name") or "").split()[0])
+                    st = (s.get("status") or "").strip().rstrip(".")
+                    if st and len(st) < 14:
+                        nm += f" ({esc(st).lower()})"
+                    names.append(nm)
+            if names:
+                lines.append(f"   {word}: " + ", ".join(names))
+    return '<div class="family-tree">' + "\n".join(lines) + "</div>"
+
+
 def sec_family(con):
     parts = ['<h2>8. Key Family Relationships</h2>']
+    tree = _family_tree(con)
+    if tree:
+        parts.append('<h3>Your Direct Family</h3>\n' + tree)
     sibs = rows(con, "select * from siblings order by id")
     if sibs:
-        parts.append('<h3>Your Direct Family</h3>\n<table class="t-tight">\n<tr>'
-                     '<th style="width:18%;">Name</th><th style="width:14%;">Relation</th>'
-                     '<th style="width:10%;">Age</th><th style="width:14%;">Status</th>'
-                     '<th style="width:44%;">Needs / Notes</th></tr>')
+        parts.append('<h3>Siblings: What Each One Needs</h3>\n<table class="t-tight">\n<tr>'
+                     '<th style="width:20%;">Name</th><th style="width:12%;">Age</th>'
+                     '<th style="width:16%;">Status</th>'
+                     '<th style="width:52%;">Needs / Notes</th></tr>')
         body = [("<tr>"
                  f'<td><strong>{esc(s["name"])}</strong></td>'
-                 f'<td>{esc(s.get("relation"))}</td>'
                  f'<td>{esc(s.get("age_approx"))}</td>'
                  f'<td>{esc(s.get("status"))}</td>'
                  f'<td>{esc(s.get("needs") or s.get("notes"))}</td></tr>') for s in sibs]
