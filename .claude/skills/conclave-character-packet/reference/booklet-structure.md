@@ -1,0 +1,49 @@
+# Booklet structure
+
+`build_content.py` emits one flow of content that the engine paginates into a
+saddle-stitch booklet: cover, table of contents, the reference sections, the
+worksheets, ruled notes pages (auto-padded to a multiple of four), and a colophon.
+Reference sections flow continuously; **each worksheet starts on a fresh page**
+(class `pb`).
+
+## Part I — Reference sections (each an `<h2>`)
+
+| # | Section | Source table(s) | Form |
+|---|---|---|---|
+| 1 | Personal Quick Reference | `pc`, `goals`, allied `characters` | namebar + qr-meta + ranked goals + two-column ally list + reminders |
+| 2 | Key Character Profiles | `characters` where `is_ally` or `papabile` | `.profile` cards: They want / You want / You offer / Avoid / Your opinion |
+| 3 | All Other Characters | remaining `characters` by role | `.t-tight` tables (Cardinals, Functionaries, Monarchs, Other) |
+| 4 | Mercenary Reference | `mercenaries` | Experienced + Fledgling tables |
+| 5 | Marriage Candidates | `marriage_candidates` | Brides + Grooms (+ Nunnery) tables |
+| 6 | Possessions & Courtiers | `possessions`, `courtiers` | two tables |
+| 7 | Forms of Address | `forms_of_address` | one table (proper + rude) |
+| 8 | Key Family Relationships | `siblings`, `families` | Direct family + family connections |
+| 9 | Rules Mechanics | `rules` grouped by category | one table per category |
+| 10 | Pronunciation Guide | `characters.pronunciation` | grouped by role |
+| 11 | Game Logistics | `logistics` | one table |
+| 12 | Starting State Checklist | `pc` + fixed checklist | qr-box with ballot boxes |
+| 13 | Map of Europe in 1492 | image + `territories` | full-bleed map + territory table |
+
+## Part II — Worksheets (each starts on its own page)
+
+| Worksheet | Prefilled from | Writable columns |
+|---|---|---|
+| Mercenary Deal Tracker | `mercenaries` (name, faction) | Buyer, Price, Other Terms, Status |
+| Marriage Deal Tracker | `marriage_candidates` (name, family) | Matched To, Dowry, Faction Gain, Notes, Status |
+| Vote Tracker | `characters` role=Cardinal | nine vote columns V1..V9 |
+| Favors & Promises | blank | owed-to-me, owed-by-me, vote commitments, money |
+| Canonization & War | blank | saints, war declarations, family-safety checklist |
+| Asset Status & Letters | `possessions` | given/traded status; letters-received log |
+
+## Changing the booklet
+
+- Content change for one character: edit the **database**, re-run `build_content.py`.
+- Add a column to a section, change a table layout, add a worksheet: edit the
+  matching function in `build_content.py` (`sec_*` and `ws_*`), then re-render.
+  Keep this table in sync.
+- Pure visual change (spacing, rules, type) that applies to all characters: edit
+  `booklet/booklet.css`. Pagination/imposition logic lives in `booklet-engine.js`.
+- Only emit class names that exist in `booklet.css` (e.g. `profile`, `t-tight`,
+  `write-row`, `prefilled`, `note`, `reminder-box`, `qr-meta`, `goals`,
+  `sheet-head`, `halftitle`). `pb` is a behavioral marker the engine reads to force
+  a page break; it has no styling.
