@@ -2,7 +2,9 @@
  *
  * Usage:
  *   node generate_pdf.cjs [HTML_PATH] [OUT_PDF]
- * Defaults: HTML_PATH=booklet/print-shop.html, OUT_PDF=booklet/Reference-Booklet.pdf
+ * Defaults: HTML_PATH=booklet/print-shop.html. If OUT_PDF is omitted the name is
+ * derived from the PC on the cover, e.g. "booklet/Cardinal della Rovere Reference
+ * Booklet.pdf".
  *
  * Requires Playwright's Chromium. If missing, install once:
  *   node <playwright>/cli.js install chromium
@@ -37,7 +39,7 @@ function pdfPageCount(file) {
 
 (async () => {
   const htmlPath = path.resolve(process.argv[2] || 'booklet/print-shop.html');
-  const outPdf = path.resolve(process.argv[3] || 'booklet/Reference-Booklet.pdf');
+  const explicitOut = process.argv[3];
   if (!fs.existsSync(htmlPath)) throw new Error('no such HTML: ' + htmlPath);
 
   const { chromium } = resolvePlaywright();
@@ -52,6 +54,22 @@ function pdfPageCount(file) {
   await p.waitForTimeout(1500); // let fonts/map settle
 
   const live = await p.evaluate(() => document.querySelectorAll('#mount .print-page').length);
+
+  // Default the filename to the PC named on the cover (the booklet's identity).
+  let outPdf;
+  if (explicitOut) {
+    outPdf = path.resolve(explicitOut);
+  } else {
+    const cover = await p.evaluate(() => {
+      const id = (window.BookletContent && window.BookletContent.identity) || {};
+      return id.coverTitle || '';
+    });
+    let name = cover.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, '')
+      .replace(/&[a-z]+;/gi, ' ').replace(/[\\/:*?"<>|]/g, ' ').replace(/\s+/g, ' ').trim();
+    outPdf = path.join(path.dirname(htmlPath),
+      (name ? name + ' ' : '') + 'Reference Booklet.pdf');
+  }
+
   await p.pdf({
     path: outPdf, width: '5.75in', height: '8.75in', printBackground: true,
     margin: { top: '0', bottom: '0', left: '0', right: '0' }, preferCSSPageSize: true,
