@@ -17,7 +17,7 @@ Reference sections flow continuously; **each worksheet starts on a fresh page**
 | 5 | Marriage Candidates | `marriage_candidates` | Brides + Grooms (+ Nunnery) tables |
 | 6 | Possessions & Courtiers | `possessions`, `courtiers` | two tables |
 | 7 | Forms of Address | `forms_of_address` | one table (proper + rude) |
-| 8 | Key Family Relationships | `pc.house`, `siblings`, `families` | family-tree diagram + sibling needs table + family connections |
+| 8 | Key Family Relationships | `pc.house`, `siblings`, `families` | family-tree diagram + kin needs table + family connections. The `siblings` table is the PC's direct/generational family: actual siblings group by mother, while a monarch's dynasty (spouse, children, heir, parents) lists by relation. |
 | 9 | Rules Mechanics | `rules` grouped by category | one table per category |
 | 10 | Pronunciation Guide | `characters.pronunciation` | grouped by role |
 | 11 | Game Logistics | `logistics` | one table |

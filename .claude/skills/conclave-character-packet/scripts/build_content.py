@@ -302,9 +302,11 @@ def sec_forms(con):
 
 
 def _family_tree(con):
-    """A scannable monospace family tree from the siblings table, grouped by
-    mother (so multiple marriages read correctly) and split sister/brother.
-    Header comes from pc.house, falling back to the PC name."""
+    """A scannable monospace family tree from the siblings table. Sibling rows
+    (relation names a sister or brother) are grouped by mother so multiple
+    marriages read correctly; all other direct kin (spouse, children, heir,
+    parents) are listed by their relation, so a monarch's dynasty renders as
+    cleanly as a cardinal's brood. Header comes from pc.house."""
     sibs = rows(con, "select * from siblings order by id")
     if not sibs:
         return ""
@@ -314,10 +316,17 @@ def _family_tree(con):
     you = esc(pc.get("name") or "You")
     lines.append(f" YOU: {you}" + (f", age {pc['age']}" if pc.get("age") else ""))
 
-    # group by mother, preserving first-seen order; collapse unknown mothers
-    # (e.g. "Unknown", "Unknown (earlier wife)") into one "earlier marriage" group
+    def hint(s):
+        st = (s.get("status") or "").strip().rstrip(".")
+        return f" ({esc(st).lower()})" if st and len(st) < 16 else ""
+
+    is_sib = lambda s: any(w in (s.get("relation") or "").lower() for w in ("sister", "brother"))
+    sib_rows = [s for s in sibs if is_sib(s)]
+    other_rows = [s for s in sibs if not is_sib(s)]
+
+    # sibling sub-tree, grouped by mother (collapsing unknown mothers)
     order, groups, disp = [], {}, {}
-    for s in sibs:
+    for s in sib_rows:
         m = s.get("mother") or ""
         k = "__earlier__" if "unknown" in m.lower() else m
         if k not in groups:
@@ -325,7 +334,6 @@ def _family_tree(con):
             groups[k] = []
             disp[k] = None if k == "__earlier__" else m
         groups[k].append(s)
-
     for k in order:
         g = groups[k]
         mother = disp[k]
@@ -336,18 +344,23 @@ def _family_tree(con):
             par = f" ({'mother' if is_full else 'stepmother'}: {esc(mother)})"
         else:
             par = ""
-        lines.append(" " + ("Full siblings" if is_full else "Half-siblings") + par)
+        sub = []
         for word, needle in (("Sisters", "sister"), ("Brothers", "brother")):
-            names = []
-            for s in g:
-                if needle in (s.get("relation") or "").lower():
-                    nm = esc((s.get("name") or "").split()[0])
-                    st = (s.get("status") or "").strip().rstrip(".")
-                    if st and len(st) < 14:
-                        nm += f" ({esc(st).lower()})"
-                    names.append(nm)
+            names = [esc((s.get("name") or "").split()[0]) + hint(s)
+                     for s in g if needle in (s.get("relation") or "").lower()]
             if names:
-                lines.append(f"   {word}: " + ", ".join(names))
+                sub.append(f"   {word}: " + ", ".join(names))
+        if sub:
+            lines.append(" " + ("Full siblings" if is_full else "Half-siblings") + par)
+            lines.extend(sub)
+
+    # spouse, children, heir, parents, and any other direct kin, by relation
+    for s in other_rows:
+        rel = esc((s.get("relation") or "Kin").strip())
+        nm = esc(s.get("name") or "")
+        st = (s.get("status") or "").strip().rstrip(".")
+        tail = f" ({esc(st).lower()})" if st and len(st) < 18 and st.lower() not in rel.lower() else ""
+        lines.append(f" {rel}: {nm}{tail}")
     return '<div class="family-tree">' + "\n".join(lines) + "</div>"
 
 
