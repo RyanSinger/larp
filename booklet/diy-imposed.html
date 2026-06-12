@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference Booklet — DIY Imposed</title>
+<link rel="stylesheet" href="fonts-embedded.css">
+<link rel="stylesheet" href="booklet.css">
+<style>
+  /* 2-up landscape sheets for double-sided home printing, fold, staple */
+  @page { size: 11in 8.5in; margin: 0; }
+  @media print {
+    .print-page { break-after: page; }
+    .print-page:last-child { break-after: auto; }
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="stage-rail no-print">
+    <h1>Temptemus Papam</h1>
+    <span class="meta">Reference Booklet &middot; DIY Imposed (fold &amp; staple)</span>
+    <span style="flex:1"></span>
+    <label class="ctrl">Cover&nbsp;
+      <select id="coverSel">
+        <option value="map">Map, full-bleed</option>
+        <option value="type">Typographic</option>
+        <option value="frame">Ruled frame</option>
+      </select>
+    </label>
+    <span class="ctrl" id="statline"></span>
+  </div>
+  <div class="stage-note no-print">
+    Print <strong style="font-style:normal">double-sided, flip on short edge</strong>, landscape,
+    Letter, margins None. Stack, fold down the middle, staple on the spine.
+  </div>
+  <div id="mount"></div>
+</div>
+<script src="booklet-content.js"></script>
+<script>window.BOOKLET_MODE = "imposed";</script>
+<script src="booklet-engine.js"></script>
+</body>
+</html>
