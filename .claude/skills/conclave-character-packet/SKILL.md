@@ -8,7 +8,7 @@ user-invocable: true
 
 Turn the game's source documents into two deliverables for one player character (PC):
 
-1. **`conclave.db`** — a SQLite knowledge base (21 tables) holding the shared
+1. **`conclave.db`** — a SQLite knowledge base (23 tables) holding the shared
    game world plus everything framed from this PC's point of view.
 2. **A print-ready reference booklet** — 13 reference sections and 6 worksheets,
    rendered from the database in the Temptemus Papam house design and exported as
@@ -26,7 +26,7 @@ re-running the build after any DB edit reproduces a correct, complete booklet.
 ## What's in this skill
 
 ```
-schema.sql              generalized 21-table schema (pc + 20 game tables)
+schema.sql              generalized 23-table schema (pc + 20 game tables + claims/forces)
 scripts/
   init_db.py            create an empty DB from schema.sql
   check_db.py           row-count + missing/empty-table report
@@ -70,6 +70,15 @@ file feeds which table. In short:
   `mercenaries`, and `marriage_candidates` row (`our_opinion`, `what_they_want`,
   `what_we_want`, `what_we_offer`, `what_to_avoid`, `is_ally`, `is_contact`,
   `priority`, `relation_to_pc`).
+- **The `pc` row drives the cover and contents page.** Set `name`, `styled_name`
+  (the honorific form, e.g. "His Eminence Cardinal ..." or "His Most Christian
+  Majesty ..."), `cover_title` (the big cover line, may contain `<br>`), and
+  `subtitle`. Set `role` to `'Cardinal'` (default) or `'Monarch'` to pick the
+  packet profile. A non-cardinal may set `cover_kicker` to override the
+  "Sede Vacante" line.
+- **Monarchs** also fill `claims` (dynastic and territorial claims) and `forces`
+  (standing armies and commanders, distinct from hireable `mercenaries`). These
+  tables stay empty for cardinals.
 - **The character list** fills the base facts of `characters` (name, age, rank,
   role, faction, location, papabile).
 - **The rules PDF** fills `rules`, `vatican_offices`, `monastic_orders`,
@@ -117,6 +126,14 @@ character (and read `reference/design-house-rules.md` first).
 
 ## Notes
 
+- **Packet profiles.** The generator picks the section and worksheet set from
+  `pc.role`. The **Cardinal** profile is the 13 sections plus 6 worksheets above.
+  The **Monarch** profile drops the conclave-only Starting State Checklist, adds
+  Claims and Armies sections near the front, moves Forms of Address and
+  Pronunciation to the back, and leads the worksheets with a Campaign Tracker.
+  Section numbers and the table of contents are derived automatically, so any
+  reordering or subset stays correctly numbered and paged. Add a new profile by
+  editing `_profile()` in `build_content.py`.
 - The generator selects **Section 2 full profile cards** for characters with
   `is_ally=1` or `papabile=1`, and puts everyone else in the **Section 3** roster
   tables. Steer this by setting those flags accurately.

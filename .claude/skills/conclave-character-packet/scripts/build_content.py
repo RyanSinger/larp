@@ -18,6 +18,7 @@ Section selection rules (deterministic):
     characters (cardinals) / possessions / courtiers.
 """
 import os
+import re
 import sys
 import json
 import html
@@ -521,6 +522,67 @@ def ws_assets(con, pcname):
     return "\n".join(out)
 
 
+# ----------------------------------------------------- monarch-only sections
+def sec_claims(con):
+    """Dynastic and territorial claims (monarch packets). Empty -> omitted."""
+    try:
+        cs = rows(con, "select * from claims order by id")
+    except sqlite3.OperationalError:
+        cs = []
+    if not cs:
+        return ""
+    out = ['<h2>0. Claims to Thrones and Lands</h2>',
+           '<table class="t-tight">\n<tr><th style="width:22%;">Claim</th>'
+           '<th style="width:18%;">Target</th><th style="width:34%;">Basis</th>'
+           '<th style="width:14%;">Status</th><th style="width:12%;">Notes</th></tr>']
+    body = [("<tr>"
+             f'<td><strong>{esc(c["name"])}</strong></td>'
+             f'<td>{esc(c.get("target"))}</td>'
+             f'<td>{esc(c.get("basis"))}</td>'
+             f'<td>{esc(c.get("status"))}</td>'
+             f'<td>{esc(c.get("notes"))}</td></tr>') for c in cs]
+    return out[0] + "\n" + out[1] + "\n" + "\n".join(body) + "\n</table>"
+
+
+def sec_forces(con):
+    """Standing armies and commanders (monarch packets). Empty -> omitted."""
+    try:
+        fs = rows(con, "select * from forces order by id")
+    except sqlite3.OperationalError:
+        fs = []
+    if not fs:
+        return ""
+    out = ['<h2>0. Armies and Commanders</h2>',
+           '<table class="t-tight">\n<tr><th style="width:22%;">Force</th>'
+           '<th style="width:14%;">Kind</th><th style="width:12%;">Strength</th>'
+           '<th style="width:18%;">Based</th><th style="width:18%;">Commander</th>'
+           '<th style="width:16%;">Notes</th></tr>']
+    body = [("<tr>"
+             f'<td><strong>{esc(f["name"])}</strong></td>'
+             f'<td>{esc(f.get("kind"))}</td>'
+             f'<td>{esc(f.get("strength"))}</td>'
+             f'<td>{esc(f.get("location"))}</td>'
+             f'<td>{esc(f.get("commander"))}</td>'
+             f'<td>{esc(f.get("notes"))}</td></tr>') for f in fs]
+    return out[0] + "\n" + out[1] + "\n" + "\n".join(body) + "\n</table>"
+
+
+def ws_campaign(con, pcname):
+    """Campaign planner worksheet (monarch packets)."""
+    out = [sheet_head("Campaign Tracker", pcname)]
+    out.append('<div class="reminder-box">\nWar declarations are due Day 3 by 9 PM. '
+               'Mercenaries will not fight close kin. Track every army you raise, hire, '
+               'or send, and who defends what.\n</div>')
+    out.append('<h3>Forces in the Field</h3>\n<table>\n<tr>'
+               '<th style="width:22%;">Force / Commander</th><th style="width:22%;">Target</th>'
+               '<th style="width:14%;">Cost / Terms</th><th style="width:22%;">Objective</th>'
+               '<th style="width:20%;">Outcome</th></tr>\n' + writerows(10, 5) + "\n</table>")
+    out.append('<h3>Claims Pressed This Conclave</h3>\n<table>\n<tr>'
+               '<th style="width:26%;">Claim</th><th style="width:50%;">Move / Leverage</th>'
+               '<th style="width:24%;">Status</th></tr>\n' + writerows(6, 3) + "\n</table>")
+    return "\n".join(out)
+
+
 # ---------------------------------------------------------------- assembly
 def worksheets_intro():
     return ('<div class="halftitle pb">\n'
@@ -533,35 +595,70 @@ def worksheets_intro():
             '</div>')
 
 
+def _renumber(sections):
+    """Rewrite the leading 'N. ' of each section's first <h2> to be sequential,
+    so sections can be reordered or subset per role and stay numbered 1..n."""
+    out = []
+    for i, s in enumerate([x for x in sections if x], 1):
+        out.append(re.sub(r'(<h2[^>]*>)\s*\d+\.\s*', rf'\g<1>{i}. ', s, count=1))
+    return out
+
+
+def identity(con):
+    """PC identity for the cover and contents page (consumed by the engine).
+    Values are trusted author content and may contain markup (e.g. <br>)."""
+    pc = pc_row(con)
+    name = pc.get("name") or "His Eminence"
+    sub = pc.get("subtitle")
+    ident = {
+        "coverTitle": pc.get("cover_title") or name,
+        "coverByline": name + (f" &middot; {sub}" if sub else ""),
+        "tocName": pc.get("styled_name") or name,
+    }
+    if pc.get("cover_kicker"):
+        ident["coverKicker"] = pc["cover_kicker"]
+    return ident
+
+
+# Packet profiles: an ordered list of section/worksheet builders per PC role.
+# Each builder is called with (con) for sections and (con, pcname) for sheets.
+def _profile(role):
+    cardinal_secs = [sec_personal, sec_key_profiles, sec_all_other, sec_mercenaries,
+                     sec_marriages, sec_possessions, sec_forms, sec_family, sec_rules,
+                     sec_pronunciation, sec_logistics, sec_checklist, sec_map]
+    cardinal_ws = [ws_mercenary, ws_marriage, ws_votes, ws_favors, ws_war, ws_assets]
+    if role == "Monarch":
+        secs = [sec_personal, sec_key_profiles, sec_claims, sec_forces, sec_all_other,
+                sec_marriages, sec_mercenaries, sec_possessions, sec_family, sec_rules,
+                sec_forms, sec_pronunciation, sec_logistics, sec_map]
+        ws = [ws_campaign, ws_marriage, ws_votes, ws_favors, ws_war, ws_assets]
+        return secs, ws
+    return cardinal_secs, cardinal_ws
+
+
 def build(db_path):
     con = sqlite3.connect(db_path)
-    _pc = pc_row(con)
-    pcname = esc(_pc.get("name") or "His Eminence")
+    pc = pc_row(con)
+    pcname = esc(pc.get("name") or "His Eminence")
+    role = pc.get("role") or "Cardinal"
 
-    sections = [
-        sec_personal(con), sec_key_profiles(con), sec_all_other(con),
-        sec_mercenaries(con), sec_marriages(con), sec_possessions(con),
-        sec_forms(con), sec_family(con), sec_rules(con), sec_pronunciation(con),
-        sec_logistics(con), sec_checklist(con), sec_map(con),
-    ]
-    worksheets = [
-        worksheets_intro(),
-        ws_mercenary(con, pcname), ws_marriage(con, pcname), ws_votes(con, pcname),
-        ws_favors(con, pcname), ws_war(con, pcname), ws_assets(con, pcname),
-    ]
+    sec_builders, ws_builders = _profile(role)
+    sections = _renumber([b(con) for b in sec_builders])
+    worksheets = [worksheets_intro()] + [b(con, pcname) for b in ws_builders]
+    ident = identity(con)
     con.close()
-    return "\n\n".join(sections + worksheets)
+    return "\n\n".join(sections + worksheets), ident
 
 
 def main(argv):
     db_path = argv[0] if len(argv) > 0 else "conclave.db"
     out_path = argv[1] if len(argv) > 1 else os.path.join("booklet", "booklet-content.js")
-    flow = build(db_path)
-    payload = "window.BookletContent = " + json.dumps({"flowHTML": flow}) + ";\n"
+    flow, ident = build(db_path)
+    payload = "window.BookletContent = " + json.dumps({"flowHTML": flow, "identity": ident}) + ";\n"
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     with open(out_path, "w") as f:
         f.write(payload)
-    print(f"wrote {out_path}  ({len(flow)} chars of flow content)")
+    print(f"wrote {out_path}  ({len(flow)} chars of flow, role-aware identity emitted)")
 
 
 if __name__ == "__main__":

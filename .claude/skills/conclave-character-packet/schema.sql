@@ -27,7 +27,10 @@
 CREATE TABLE pc (
   id INTEGER PRIMARY KEY CHECK(id = 1),
   name TEXT NOT NULL,           -- e.g. "Cardinal Federico Sanseverino"
+  role TEXT DEFAULT 'Cardinal', -- 'Cardinal' or 'Monarch'; selects the booklet packet profile
+  styled_name TEXT,             -- honorific form for cover/TOC, e.g. "His Eminence Cardinal Federico Sanseverino"
   cover_title TEXT,             -- big cover line, may contain <br>, e.g. "Cardinal<br>Sanseverino"
+  cover_kicker TEXT,            -- optional override for the cover kicker line (non-cardinals)
   subtitle TEXT,                -- e.g. "Cardinal Deacon of San Teodoro"
   age INTEGER,
   rank TEXT,
@@ -42,6 +45,28 @@ CREATE TABLE pc (
   evidence_of_crime TEXT,
   property_in_rome TEXT,
   key_reminders TEXT,           -- free text shown in the quick-reference panel
+  notes TEXT
+);
+
+-- Monarch packets only (empty for cardinals): dynastic and territorial claims.
+CREATE TABLE claims (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,           -- e.g. "Throne of Naples"
+  target TEXT,                  -- who/what it is against, e.g. "Ferrante of Aragon"
+  basis TEXT,                   -- the legal/dynastic basis
+  status TEXT,                  -- pressed / dormant / renounced / won
+  notes TEXT
+);
+
+-- Monarch packets only (empty for cardinals): standing armies and commanders,
+-- distinct from the hireable mercenaries table.
+CREATE TABLE forces (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  kind TEXT,                    -- e.g. "Royal army", "Fleet", "Levy"
+  strength TEXT,
+  location TEXT,
+  commander TEXT,
   notes TEXT
 );
 

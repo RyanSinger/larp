@@ -35,6 +35,25 @@ Reference sections flow continuously; **each worksheet starts on a fresh page**
 | Canonization & War | blank | saints, war declarations, family-safety checklist |
 | Asset Status & Letters | `possessions` | given/traded status; letters-received log |
 
+## Packet profiles (per role)
+
+`build_content.py` chooses an ordered set of section and worksheet builders from
+`pc.role`. Section numbers (I, II, ...) and the table of contents are derived from
+the rendered content, so a profile may reorder or omit sections freely and stay
+correctly numbered and paged.
+
+- **Cardinal** (default): the 13 sections and 6 worksheets in the tables above.
+- **Monarch**: drops the conclave-only Starting State Checklist; inserts **Claims
+  to Thrones and Lands** (from `claims`) and **Armies and Commanders** (from
+  `forces`) right after Key Profiles; moves Forms of Address and Pronunciation to
+  the back; leads the worksheets with a **Campaign Tracker** in place of the
+  Mercenary Deal Tracker. The Vote Tracker stays (a monarch tracks the cardinals
+  as intel).
+
+Add or adjust a profile in `_profile()` in `build_content.py`. Monarch-only
+sections (`sec_claims`, `sec_forces`) and worksheets (`ws_campaign`) return empty
+and are skipped when their tables are empty, so they are harmless in any profile.
+
 ## Changing the booklet
 
 - Content change for one character: edit the **database**, re-run `build_content.py`.

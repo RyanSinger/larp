@@ -8,7 +8,7 @@ seat** (the sheet). Below is the mapping from source to database table.
 
 | File | Kind | Feeds |
 |---|---|---|
-| `Character Sheet - <Name>.pdf` | PC-specific | `pc`, `goals`, `possessions`, `courtiers`, `siblings`, `relationships`, `strategic_insights`, and all PC-relative framing on `characters` / `mercenaries` / `marriage_candidates`; `families.our_connection` |
+| `Character Sheet - <Name>.pdf` | PC-specific | `pc` (identity, `role`, cover fields), `goals`, `possessions`, `courtiers`, `siblings`, `relationships`, `strategic_insights`, and all PC-relative framing on `characters` / `mercenaries` / `marriage_candidates`; `families.our_connection`. For a **Monarch** also `claims` (thrones and territorial claims) and `forces` (royal armies, fleets, commanders). |
 | `... Character List.pdf` | shared | base facts for `characters` (name, age, rank, role, faction, location, papabile) |
 | `... Rules ....pdf` | shared | `rules`, `vatican_offices`, `monastic_orders`, `forms_of_address`, `ports`, `territories`, `logistics`; mercenary and marriage roster mechanics |
 | `... Facts About the World.pdf` | shared | `world_facts` |

@@ -130,12 +130,20 @@
   // -------- fixed page builders --------
   var KICK = '<span style="color:var(--rubric)">&#10016;</span>&ensp;Sede Vacante &middot; Anno Domini MCDXCII&ensp;<span style="color:var(--rubric)">&#10016;</span>';
 
+  // PC identity is supplied by booklet-content.js (window.BookletContent.identity);
+  // fall back to literals so the engine still renders if it is absent.
+  function _id(){ return (window.BookletContent && window.BookletContent.identity) || {}; }
+  function idTitle(){   return _id().coverTitle  || 'Cardinal<br>Sanseverino'; }
+  function idByline(){  return _id().coverByline || 'Federico Sanseverino &middot; Cardinal Deacon of San Teodoro'; }
+  function idTocName(){ return _id().tocName     || 'His Eminence Cardinal Federico Sanseverino'; }
+  function idKick(def){ return _id().coverKicker || def; }
+
   function coverHTML(v){
     if(v==="type"){
       return '<div class="cover cover--type">'+
         '<div class="cross">&#10016;</div>'+
-        '<div class="kick">Sede Vacante &middot; A Conclave at Rome</div>'+
-        '<div class="ti">Cardinal<br>Sanseverino</div>'+
+        '<div class="kick">'+idKick('Sede Vacante &middot; A Conclave at Rome')+'</div>'+
+        '<div class="ti">'+idTitle()+'</div>'+
         '<div class="frabar"></div>'+
         '<div class="by">A Reference Booklet for the Election of a Pope</div>'+
         '<div class="yr">Anno Domini MCDXCII</div>'+
@@ -144,8 +152,8 @@
     if(v==="frame"){
       return '<div class="cover cover--frame"><div class="fr">'+
         '<div class="cross">&#10016;</div>'+
-        '<div class="kick">Sede Vacante</div>'+
-        '<div class="ti">Cardinal<br>Sanseverino</div>'+
+        '<div class="kick">'+idKick('Sede Vacante')+'</div>'+
+        '<div class="ti">'+idTitle()+'</div>'+
         '<div class="fdiv"></div>'+
         '<div class="by">A Reference Booklet for the Conclave at Rome, that the reader may know his allies, his enemies, his armies, and his kin.</div>'+
         '<div class="yr">Anno Domini MCDXCII &middot; Roma</div>'+
@@ -156,12 +164,12 @@
       '<div class="mapwrap"><img src="europe-1492-map.jpg" alt=""></div>'+
       '<div class="scrim"></div>'+
       '<div class="cap">'+
-        '<div class="kick">'+KICK+'</div>'+
-        '<div class="ti">Cardinal<br>Sanseverino</div>'+
+        '<div class="kick">'+idKick(KICK)+'</div>'+
+        '<div class="ti">'+idTitle()+'</div>'+
       '</div>'+
       '<div class="foot">'+
         '<div class="by">A Reference Booklet for the Conclave at Rome</div>'+
-        '<div class="yr">Federico Sanseverino &middot; Cardinal Deacon of San Teodoro</div>'+
+        '<div class="yr">'+idByline()+'</div>'+
       '</div>'+
     '</div>';
   }
@@ -179,7 +187,7 @@
       '<div class="toc-head">'+
         '<div class="cross">&#10016;</div>'+
         '<div class="ti">Contents</div>'+
-        '<div class="by">His Eminence Cardinal Federico Sanseverino</div>'+
+        '<div class="by">'+idTocName()+'</div>'+
       '</div>'+
       '<ol class="toc-list">'+rows+'</ol>'+
     '</div>';
@@ -283,38 +291,35 @@
     var res=paginate(blocks);
     var flowed=res.pages;
 
-    // locate section pages (flowed index -> absolute page = +3 because cover,toc precede)
-    function pageOf(substr){
-      for(var i=0;i<flowed.length;i++){
-        var hs=flowed[i].querySelectorAll("h2, .sheet-head h1, .halftitle .ti");
-        for(var j=0;j<hs.length;j++){
-          if(hs[j].textContent.replace(/\s+/g," ").indexOf(substr)>=0) return i+3;
+    // Derive the table of contents from the flowed content (flowed index ->
+    // absolute page = +3, because cover and toc precede). Part I sections are
+    // each <h2>; the worksheets begin at a .halftitle divider; each worksheet
+    // is a .sheet-head h1. This stays correct for any section set or order.
+    function roman(n){
+      var R=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII",
+             "XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI","XXII","XXIII","XXIV"];
+      return R[n-1] || (""+n);
+    }
+    var toc=[], secNo=0;
+    for(var pi=0; pi<flowed.length; pi++){
+      var pageNum=pi+3;
+      var nodes=flowed[pi].querySelectorAll("h2, .halftitle, .sheet-head h1");
+      for(var ni=0; ni<nodes.length; ni++){
+        var node=nodes[ni];
+        if(node.tagName==="H2"){
+          secNo++;
+          var lab=node.textContent.replace(/\s+/g," ").replace(/^\s*\d+\.\s*/,"").trim();
+          toc.push({rn:roman(secNo), label:lab, page:pageNum});
+        } else if(node.classList && node.classList.contains("halftitle")){
+          var ti=node.querySelector(".ti");
+          var pl=ti ? ti.innerHTML.replace(/<br\s*\/?>/gi," ").replace(/<[^>]+>/g,"")
+                        .replace(/\s+/g," ").trim() : "Worksheets";
+          toc.push({part:true, label:"Part II \u00b7 "+pl});
+        } else { // .sheet-head h1
+          toc.push({rn:"", label:node.textContent.replace(/\s+/g," ").trim(), page:pageNum});
         }
       }
-      return null;
     }
-    var toc=[
-      {rn:"I",   label:"Personal Quick Reference", page:pageOf("1. Personal")},
-      {rn:"II",  label:"Key Character Profiles",   page:pageOf("2. Key Character")},
-      {rn:"III", label:"All Other Characters",     page:pageOf("3. All Other")},
-      {rn:"IV",  label:"Mercenary Reference",      page:pageOf("4. Mercenary")},
-      {rn:"V",   label:"Marriage Candidates",      page:pageOf("5. Marriage")},
-      {rn:"VI",  label:"Possessions & Courtiers",  page:pageOf("6. Possessions")},
-      {rn:"VII", label:"Forms of Address",         page:pageOf("7. Forms")},
-      {rn:"VIII",label:"Key Family Relationships", page:pageOf("8. Key Family")},
-      {rn:"IX",  label:"Rules Mechanics Quick Reference", page:pageOf("9. Rules")},
-      {rn:"X",   label:"Pronunciation Guide",     page:pageOf("10. Pronunciation")},
-      {rn:"XI",  label:"Game Logistics",          page:pageOf("11. Game")},
-      {rn:"XII", label:"Starting State Checklist", page:pageOf("12. Starting")},
-      {rn:"XIII",label:"Map of Europe in 1492",   page:pageOf("13. Map")},
-      {part:true, label:"Part II \u00b7 The Conclave Worksheets"},
-      {rn:"", label:"Mercenary Deal Tracker", page:pageOf("Mercenary Deal")},
-      {rn:"", label:"Marriage Deal Tracker",  page:pageOf("Marriage Deal")},
-      {rn:"", label:"Vote Tracker",           page:pageOf("Vote Tracker")},
-      {rn:"", label:"Favors & Promises",      page:pageOf("Favors")},
-      {rn:"", label:"Canonization & War",     page:pageOf("Canonization")},
-      {rn:"", label:"Asset Status & Letters", page:pageOf("Asset Status")}
-    ];
 
     // assemble ordered leaves: cover, toc, ...flowed, notes(pad), colophon
     var leaves=[];
