@@ -85,6 +85,15 @@ def main(argv):
         if norel:
             notes.append(f"{norel} marriage candidate(s) have no relation to the PC: say who each one is.")
 
+    # Perspective leak: names/text seeded from another packet still carry the
+    # source character's relative framing ("Uncle Fabrizio", "your uncle Julius").
+    leak = con.execute("select count(*) from characters where name like 'Uncle %' "
+                       "or name like 'Aunt %' or name like 'Great-uncle %' or name like 'Great-aunt %'").fetchone()[0]
+    if leak:
+        notes.append(f"{leak} character name(s) begin with Uncle/Aunt: these are the source "
+                     "packet's framing carried over by copy_shared. Relabel them for THIS PC, "
+                     "and scrub 'your uncle/aunt' framing from characters.notes, families, and logistics.")
+
     print()
     if warns:
         print("WARNINGS:")

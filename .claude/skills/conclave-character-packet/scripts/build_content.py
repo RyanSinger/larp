@@ -144,19 +144,36 @@ def _profile_card(c):
     return "\n".join(out)
 
 
+def _pc_char_ids(con):
+    """The character row(s) that ARE the PC, so the booklet does not list the PC
+    among the people they deal with. Matched by name against the pc row (the
+    character roster has no explicit link to pc)."""
+    name = (pc_row(con).get("name") or "").lower()
+    if not name:
+        return set()
+    out = set()
+    for r in rows(con, "select id, name from characters"):
+        cn = (r["name"] or "").lower()
+        if cn and (cn in name or name.endswith(cn)):
+            out.add(r["id"])
+    return out
+
+
 def _key_ids(con):
     """Section 2 full-profile set. Primary path: the figures the skill flagged
     is_key while reading the character sheet, the people this PC will deal with
     most (allies AND the chief rivals they must outmaneuver), kept to a readable
     dozen or so so the section stays useful at the table. Fallback for a DB with
-    nothing flagged: every papal contender and ally who is not a family NPC."""
+    nothing flagged: every papal contender and ally who is not a family NPC.
+    The PC themselves are never included."""
+    pcids = _pc_char_ids(con)
     if "is_key" in cols(con, "characters"):
         keyed = rows(con, "select id from characters where is_key=1")
         if keyed:
-            return {r["id"] for r in keyed}
+            return {r["id"] for r in keyed} - pcids
     return {r["id"] for r in rows(
         con, "select id from characters where (papabile=1 or is_ally=1) "
-             "and (role is null or role != 'NPC')")}
+             "and (role is null or role != 'NPC')")} - pcids
 
 
 def sec_key_profiles(con):
@@ -168,8 +185,9 @@ def sec_key_profiles(con):
 
 
 def _other_table(con, title, role, keyids):
+    skip = keyids | _pc_char_ids(con)
     cs = [c for c in rows(con, "select * from characters where role=? order by id", (role,))
-          if c["id"] not in keyids]
+          if c["id"] not in skip]
     if not cs:
         return ""
     head = (f'<h3>{title}</h3>\n<table class="t-tight">\n<tr>'
@@ -330,7 +348,7 @@ def _family_tree(con):
 
     def hint(s):
         st = (s.get("status") or "").strip().rstrip(".")
-        return f" ({esc(st).lower()})" if st and len(st) < 16 else ""
+        return f" ({esc(st)})" if st and len(st) < 18 else ""
 
     is_sib = lambda s: any(w in (s.get("relation") or "").lower() for w in ("sister", "brother"))
     sib_rows = [s for s in sibs if is_sib(s)]
@@ -371,7 +389,7 @@ def _family_tree(con):
         rel = esc((s.get("relation") or "Kin").strip())
         nm = esc(s.get("name") or "")
         st = (s.get("status") or "").strip().rstrip(".")
-        tail = f" ({esc(st).lower()})" if st and len(st) < 18 and st.lower() not in rel.lower() else ""
+        tail = f" ({esc(st)})" if st and len(st) < 24 and st.lower() not in rel.lower() else ""
         lines.append(f" {rel}: {nm}{tail}")
     return '<div class="family-tree">' + "\n".join(lines) + "</div>"
 
