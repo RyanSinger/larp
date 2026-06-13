@@ -13,7 +13,7 @@
 --   PC-RELATIVE (framed from THIS character's point of view, authored from the
 --   PC's own character sheet — "our/we/you" always means the PC):
 --     pc, goals, possessions, courtiers, siblings, relationships,
---     strategic_insights, messages, claims, forces; the PC's own
+--     strategic_insights, messages, claims, forces, external_powers; the PC's own
 --     marriage_candidates (their kin to marry off, NOT a shared roster);
 --     families.our_connection; the our_opinion / what_we_want / what_we_offer /
 --     what_to_avoid / is_ally / is_contact / is_key framing on characters; and
@@ -71,6 +71,19 @@ CREATE TABLE forces (
   strength TEXT,
   location TEXT,
   commander TEXT,
+  notes TEXT
+);
+
+-- Important figures and powers NOT seated at the conclave, so they have no
+-- characters row: a monarch's Prince-Electors, rival kings, creditors, the
+-- Sultan. This is where a monarch's real game (which the conclave roster cannot
+-- hold) becomes structured instead of buried in prose. Empty for most cardinals.
+CREATE TABLE external_powers (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,           -- e.g. "Berthold von Henneberg, Elector of Mainz"
+  role TEXT,                    -- e.g. "Prince-Elector", "King", "Banker", "Sultan"
+  allegiance TEXT,             -- their leaning, or whose side they are on
+  leverage TEXT,               -- what they want and how you win or use them
   notes TEXT
 );
 
