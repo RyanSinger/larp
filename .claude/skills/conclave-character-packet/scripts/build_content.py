@@ -684,6 +684,64 @@ def sec_external(con):
     return out[0] + "\n" + out[1] + "\n" + "\n".join(body) + "\n</table>"
 
 
+def sec_agenda(con):
+    """Priority tables tailored to this character (the `agenda` table). Each
+    distinct section becomes its own booklet table, so the content, not just the
+    framing, follows the character's priorities. Returns a LIST of sections."""
+    try:
+        rs = rows(con, "select * from agenda order by id")
+    except sqlite3.OperationalError:
+        return []
+    if not rs:
+        return []
+    order, groups = [], {}
+    for r in rs:
+        s = r.get("section") or "Priorities"
+        if s not in groups:
+            order.append(s)
+            groups[s] = []
+        groups[s].append(r)
+    out = []
+    for s in order:
+        g = groups[s]
+        st = any((x.get("status") or "").strip() for x in g)
+        head = (f'<h2>0. {esc(s)}</h2>\n<table class="t-tight">\n<tr>'
+                '<th style="width:26%;">Item</th>'
+                f'<th style="width:{"54%" if st else "74%"};">Detail</th>'
+                + ('<th style="width:20%;">Status</th>' if st else '') + '</tr>')
+        body = []
+        for x in g:
+            cells = (f'<td><strong>{esc(x.get("item"))}</strong></td>'
+                     f'<td>{esc(x.get("detail"))}</td>')
+            if st:
+                cells += f'<td>{esc(x.get("status"))}</td>'
+            body.append("<tr>" + cells + "</tr>")
+        out.append(head + "\n" + "\n".join(body) + "\n</table>")
+    return out
+
+
+def sec_strategy(con):
+    """The character's strategic_insights, grouped by category. Empty -> omitted.
+    (Previously these lived only in the database and never reached the booklet.)"""
+    rs = rows(con, "select * from strategic_insights order by id")
+    if not rs:
+        return ""
+    order, groups = [], {}
+    for r in rs:
+        cat = (r.get("category") or "strategy").replace("_", " ").title()
+        if cat not in groups:
+            order.append(cat)
+            groups[cat] = []
+        groups[cat].append(r)
+    parts = ['<h2>0. Strategy and Intelligence</h2>']
+    for cat in order:
+        parts.append(f'<h3>{esc(cat)}</h3>')
+        for r in groups[cat]:
+            parts.append(f'<div class="profile-row"><strong>{esc(r.get("title"))}:</strong> '
+                         f'{esc(r.get("detail"))}</div>')
+    return "\n".join(parts)
+
+
 def ws_campaign(con, pcname):
     """Campaign planner worksheet (monarch packets)."""
     out = [sheet_head("Campaign Tracker", pcname)]
@@ -740,17 +798,22 @@ def identity(con):
 # Packet profiles: an ordered list of section/worksheet builders per PC role.
 # Each builder is called with (con) for sections and (con, pcname) for sheets.
 def _profile(role):
-    cardinal_secs = [sec_personal, sec_key_profiles, sec_all_other, sec_mercenaries,
-                     sec_marriages, sec_possessions, sec_forms, sec_family, sec_rules,
-                     sec_pronunciation, sec_logistics, sec_checklist, sec_map]
+    # The character's own priority tables (sec_agenda) and strategy (sec_strategy)
+    # sit right after Key Profiles, so the front of the booklet is who matters
+    # plus this character's specific game, before the full reference tables.
+    cardinal_secs = [sec_personal, sec_key_profiles, sec_agenda, sec_strategy,
+                     sec_all_other, sec_mercenaries, sec_marriages, sec_possessions,
+                     sec_forms, sec_family, sec_rules, sec_pronunciation,
+                     sec_logistics, sec_checklist, sec_map]
     cardinal_ws = [ws_mercenary, ws_marriage, ws_votes, ws_favors, ws_war, ws_assets]
     if role == "Monarch":
         secs = [sec_personal, sec_key_profiles, sec_claims, sec_forces, sec_external,
-                sec_all_other, sec_marriages, sec_mercenaries, sec_possessions,
-                sec_family, sec_rules, sec_forms, sec_pronunciation, sec_logistics, sec_map]
+                sec_agenda, sec_strategy, sec_all_other, sec_marriages, sec_mercenaries,
+                sec_possessions, sec_family, sec_rules, sec_forms, sec_pronunciation,
+                sec_logistics, sec_map]
         ws = [ws_campaign, ws_marriage, ws_votes, ws_favors, ws_war, ws_assets]
         return secs, ws
-    # A cardinal with off-roster powers (rare) still gets the section, after family.
+    # A cardinal with off-roster powers (rare) still gets that section, after family.
     secs = list(cardinal_secs)
     secs.insert(secs.index(sec_family) + 1, sec_external)
     return secs, cardinal_ws
@@ -763,7 +826,12 @@ def build(db_path):
     role = pc.get("role") or "Cardinal"
 
     sec_builders, ws_builders = _profile(role)
-    sections = _renumber([b(con) for b in sec_builders])
+    # A builder may return a single section string or a list of sections.
+    raw = []
+    for b in sec_builders:
+        r = b(con)
+        raw.extend(r if isinstance(r, list) else [r])
+    sections = _renumber(raw)
     worksheets = [worksheets_intro()] + [w for w in (b(con, pcname) for b in ws_builders) if w]
     ident = identity(con)
     con.close()
