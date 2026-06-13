@@ -97,6 +97,14 @@ In short, the character sheet supplies:
   `what_we_want`, `what_we_offer`, `what_to_avoid`, `is_ally`, `is_contact`,
   `priority`, `relation_to_pc`). Set `papabile=1` on every papal contender and
   `is_ally=1` on every ally.
+- **Give the character priority tables in `agenda`.** Infer this character's top
+  priorities from the sheet and build a table for each: a papal candidate gets a
+  "Path to the Papacy" and a "Targets in Italy"; a monarch gets "Alliance Options"
+  and "War Aims"; a mercenary broker leans on the mercenary tables instead. Each
+  distinct `agenda.section` becomes its own booklet table (item, detail, optional
+  status), placed right after Key Profiles, so the booklet's content, not just its
+  framing, follows the character. `strategic_insights` also now render as a
+  "Strategy and Intelligence" section, so author them generously.
 - **Judge who matters and flag `is_key=1` on them.** As you read the character
   sheet, decide who this PC will actually deal with most over the game: their
   patron and inner circle, their closest allied cardinals, the papal contenders
