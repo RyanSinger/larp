@@ -87,6 +87,19 @@ CREATE TABLE external_powers (
   notes TEXT
 );
 
+-- Priority tables tailored to THIS character, inferred from the sheet. Each
+-- distinct `section` becomes its own table in the booklet, so a papal candidate
+-- gets a "Path to the Papacy" and a "Targets in Italy", a monarch gets "Alliance
+-- Options" and "War Aims", and so on. This is how the booklet's content, not just
+-- its framing, follows the character's priorities. Author the sections that fit.
+CREATE TABLE agenda (
+  id INTEGER PRIMARY KEY,
+  section TEXT NOT NULL,        -- the table heading, e.g. "Path to the Papacy"
+  item TEXT NOT NULL,           -- the row label, e.g. "France (King Charles)"
+  detail TEXT,                  -- the plan, what it takes, what it gains
+  status TEXT                   -- optional short status or priority
+);
+
 CREATE TABLE characters (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
