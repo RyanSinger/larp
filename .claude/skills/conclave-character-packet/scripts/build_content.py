@@ -646,6 +646,30 @@ def sec_forces(con):
     return out[0] + "\n" + out[1] + "\n" + "\n".join(body) + "\n</table>"
 
 
+def sec_external(con):
+    """Important figures and powers not seated at the conclave (Electors, foreign
+    kings, creditors, the Sultan). Empty -> omitted. This is where a monarch's
+    real game, which the conclave roster cannot hold, becomes a reference."""
+    try:
+        ps = rows(con, "select * from external_powers order by id")
+    except sqlite3.OperationalError:
+        ps = []
+    if not ps:
+        return ""
+    out = ['<h2>0. Powers Beyond the Conclave</h2>',
+           '<table class="t-tight">\n<tr><th style="width:24%;">Figure</th>'
+           '<th style="width:16%;">Role</th><th style="width:16%;">Leaning</th>'
+           '<th style="width:30%;">What They Want / Your Lever</th>'
+           '<th style="width:14%;">Notes</th></tr>']
+    body = [("<tr>"
+             f'<td><strong>{esc(p["name"])}</strong></td>'
+             f'<td>{esc(p.get("role"))}</td>'
+             f'<td>{esc(p.get("allegiance"))}</td>'
+             f'<td>{esc(p.get("leverage"))}</td>'
+             f'<td>{esc(p.get("notes"))}</td></tr>') for p in ps]
+    return out[0] + "\n" + out[1] + "\n" + "\n".join(body) + "\n</table>"
+
+
 def ws_campaign(con, pcname):
     """Campaign planner worksheet (monarch packets)."""
     out = [sheet_head("Campaign Tracker", pcname)]
@@ -707,12 +731,15 @@ def _profile(role):
                      sec_pronunciation, sec_logistics, sec_checklist, sec_map]
     cardinal_ws = [ws_mercenary, ws_marriage, ws_votes, ws_favors, ws_war, ws_assets]
     if role == "Monarch":
-        secs = [sec_personal, sec_key_profiles, sec_claims, sec_forces, sec_all_other,
-                sec_marriages, sec_mercenaries, sec_possessions, sec_family, sec_rules,
-                sec_forms, sec_pronunciation, sec_logistics, sec_map]
+        secs = [sec_personal, sec_key_profiles, sec_claims, sec_forces, sec_external,
+                sec_all_other, sec_marriages, sec_mercenaries, sec_possessions,
+                sec_family, sec_rules, sec_forms, sec_pronunciation, sec_logistics, sec_map]
         ws = [ws_campaign, ws_marriage, ws_votes, ws_favors, ws_war, ws_assets]
         return secs, ws
-    return cardinal_secs, cardinal_ws
+    # A cardinal with off-roster powers (rare) still gets the section, after family.
+    secs = list(cardinal_secs)
+    secs.insert(secs.index(sec_family) + 1, sec_external)
+    return secs, cardinal_ws
 
 
 def build(db_path):
