@@ -27,9 +27,11 @@ re-running the build after any DB edit reproduces a correct, complete booklet.
 
 ```
 schema.sql              generalized 23-table schema (pc + 20 game tables + claims/forces)
+shared-world.db         the canonical, player-neutral shared game world
 scripts/
   init_db.py            create an empty DB from schema.sql
-  copy_shared.py        seed the shared game world from an existing packet DB
+  copy_shared.py        seed the shared world (from shared-world.db by default)
+  build_shared_world.py rebuild shared-world.db (neutral, from the game documents)
   dbhelpers.py          insert/insert_many/update helpers (author with these)
   check_db.py           structural report + curation/depth/content quality lint
   build_content.py      DB  ->  booklet/booklet-content.js  (the generator)
@@ -60,24 +62,19 @@ means this PC.
 ### 2. Create the database and seed the shared world
 ```
 python3 SKILL_DIR/scripts/init_db.py conclave.db
+python3 SKILL_DIR/scripts/copy_shared.py conclave.db
 ```
-The game world is identical for every player. If a finished packet already exists
-(for example another character's `conclave.db`), seed the shared tables from it
-instead of re-extracting them from the PDFs:
-```
-python3 SKILL_DIR/scripts/copy_shared.py OTHER_CHARACTER/conclave.db conclave.db
-```
-This fills the world tables, the base character facts, the mercenary specs, and
-the family roster, and leaves every PC-relative column blank for you to author.
-Prefer the least-authored existing packet as the source, since `what_they_want`
-and `notes` carry over as a baseline and may hold the source character's slant;
-review and adjust them. Then **scrub the source character's perspective**: a
-seed will carry relative framing in many places, not just one. Relabel character
-names like "Uncle Fabrizio Colonna" or "Aunt Costanza" (they are the *source's*
-relatives, perhaps nothing to the new PC), and rewrite "your uncle Julius" style
-phrasing in `characters.notes`, `families.key_members`/`our_connection`,
-`logistics`, and `timeline` from the NEW PC's point of view. `check_db` flags the
-clearest cases (names beginning Uncle/Aunt). The PC's own character row is
+The game world (rules, the cast's base facts, mercenary specs, the family roster,
+world facts, timeline, offices, ports, territories, forms of address, run-of-play
+logistics) is identical for every player and comes from the game documents. The
+one-argument form seeds it from the bundled, player-neutral `shared-world.db`,
+filling those tables and leaving every PC-relative column blank for you to author.
+
+Seed from the neutral world, NOT from another character's packet. A player's
+packet carries their perspective into supposedly-shared columns (their relatives
+as "Uncle Fabrizio", their starting state in logistics), which then leaks into
+the new booklet. If the game materials change, rebuild the neutral world with
+`build_shared_world.py BASE_DB` and re-derive it. The PC's own character row is
 excluded from the roster automatically, by name.
 
 ### 3. Populate the PC-relative content from the character sheet

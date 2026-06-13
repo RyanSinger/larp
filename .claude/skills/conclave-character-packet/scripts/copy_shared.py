@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
-"""Seed a new character's database with the shared game world from an existing
-packet, so you only have to author the PC-relative content from the new sheet.
+"""Seed a new character's database with the shared game world, so you only have
+to author the PC-relative content from the new sheet.
 
 Usage:
-    python3 copy_shared.py SOURCE_DB TARGET_DB
+    python3 copy_shared.py TARGET_DB            # from the bundled neutral world
+    python3 copy_shared.py SOURCE_DB TARGET_DB  # from a specific packet
 
-The game world is identical for every player, so re-extracting it from the PDFs
-for each character is wasted effort and a source of error. This copies it across:
+The game world (rules, the cast's base facts, mercenary specs, the family roster,
+world facts, timeline, offices, ports, territories, forms of address, run-of-play
+logistics) is identical for every player and comes from the game documents, not
+from any one player. Seed from the bundled, player-neutral `shared-world.db`
+(built by build_shared_world.py); do NOT seed from another character's packet
+unless you mean to, because that carries their perspective ("Uncle Fabrizio",
+their starting state) into supposedly-shared columns. This copies across:
 
   Verbatim (fully shared):
     rules, world_facts, timeline, forms_of_address, ports, territories,
@@ -20,13 +26,15 @@ for each character is wasted effort and a source of error. This copies it across
     families     -> name, seat, faction, key_members, notes. Reset: our_connection.
 
 NOT copied (these are entirely the new PC's, author them from the sheet):
-    pc, goals, possessions, courtiers, siblings, relationships,
-    strategic_insights, messages, marriage_candidates, claims, forces
+    pc, goals, possessions, courtiers, siblings, relationships, strategic_insights,
+    messages, marriage_candidates, claims, forces, external_powers, agenda
 
-Caveat: a shared roster may still carry the SOURCE character's framing in a few
-names or titles (e.g. "Uncle Giovanni della Rovere", "Aunt Costanza"). Relabel
-those relatives for the new PC after copying.
+The bundled shared-world.db is already neutral. If you instead seed from another
+character's packet (two-arg form), scrub the source's perspective afterward:
+relative names ("Uncle Fabrizio"), "your uncle" phrasing in notes/families/
+logistics, and that player's starting state. check_db flags the clearest cases.
 """
+import os
 import sys
 import sqlite3
 
@@ -41,10 +49,20 @@ FAM_COLS = ['name', 'seat', 'faction', 'key_members', 'notes']
 
 
 def main(argv):
-    if len(argv) < 2:
-        sys.exit("usage: python3 copy_shared.py SOURCE_DB TARGET_DB")
-    src = sqlite3.connect(argv[0])
-    dst = sqlite3.connect(argv[1])
+    if not argv:
+        sys.exit("usage: python3 copy_shared.py [SOURCE_DB] TARGET_DB\n"
+                 "  one arg: seed TARGET_DB from the bundled neutral shared-world.db\n"
+                 "  two args: seed TARGET_DB from your own SOURCE_DB")
+    if len(argv) == 1:
+        here = os.path.dirname(os.path.abspath(__file__))
+        source, target = os.path.join(here, "..", "shared-world.db"), argv[0]
+        if not os.path.exists(source):
+            sys.exit("no bundled shared-world.db; build it with build_shared_world.py, "
+                     "or pass an explicit SOURCE_DB")
+    else:
+        source, target = argv[0], argv[1]
+    src = sqlite3.connect(source)
+    dst = sqlite3.connect(target)
 
     def cols(con, t):
         return [r[1] for r in con.execute(f'PRAGMA table_info("{t}")')]
