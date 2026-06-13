@@ -9,7 +9,7 @@ seat** (the sheet). Below is the mapping from source to database table.
 | File | Kind | Feeds |
 |---|---|---|
 | `Character Sheet - <Name>.pdf` | PC-specific | `pc` (identity, `role`, cover fields), `goals`, `possessions`, `courtiers`, `siblings`, `relationships`, `strategic_insights`, `agenda` (the character's priority tables inferred from the sheet), and all PC-relative framing on `characters` / `mercenaries` / `marriage_candidates`; `families.our_connection`. For a **Monarch** also `claims` (thrones and territorial claims), `forces` (royal armies, fleets, commanders), and `external_powers` (Electors, foreign kings, creditors, the Sultan: the off-roster figures the monarch's game turns on). |
-| `... Character List.pdf` | shared | base facts for `characters` (name, age, rank, role, faction, location, papabile) |
+| `... Character List.pdf` (Dramatis Personae) | shared | the canonical neutral cast. Captured once in `reference/cast.json` (base facts plus a third-person `what_they_want`); `build_shared_world.py` loads `characters` from that file. Re-derive `cast.json` from this PDF if the roster changes. |
 | `... Rules ....pdf` | shared | `rules`, `vatican_offices`, `monastic_orders`, `forms_of_address`, `ports`, `territories`, `logistics`; the mercenary roster and marriage mechanics |
 | `... Facts About the World.pdf` | shared | `world_facts` |
 | `... Timeline ....pdf` | shared | `timeline` |

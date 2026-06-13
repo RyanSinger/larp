@@ -72,10 +72,14 @@ filling those tables and leaving every PC-relative column blank for you to autho
 
 Seed from the neutral world, NOT from another character's packet. A player's
 packet carries their perspective into supposedly-shared columns (their relatives
-as "Uncle Fabrizio", their starting state in logistics), which then leaks into
-the new booklet. If the game materials change, rebuild the neutral world with
-`build_shared_world.py BASE_DB` and re-derive it. The PC's own character row is
-excluded from the roster automatically, by name.
+as "Uncle Fabrizio", their starting state in logistics, "your ally Isabella"),
+which then leaks into the new booklet. The cast in `shared-world.db` comes from
+the canonical roster `reference/cast.json`, derived directly from the game's
+Dramatis Personae (the Character List PDF), so the shared cast and its neutral
+`what_they_want` come from the document, not from any player. If the game
+materials change, edit `reference/cast.json` and/or rerun
+`build_shared_world.py BASE_DB` to re-derive the neutral world. The PC's own
+character row is excluded from the roster automatically, by name.
 
 ### 3. Populate the PC-relative content from the character sheet
 Read the PCs sheet and INSERT or UPDATE rows. See `reference/sources.md` for

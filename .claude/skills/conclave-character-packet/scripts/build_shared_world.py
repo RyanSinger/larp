@@ -1,36 +1,44 @@
 #!/usr/bin/env python3
 """Build shared-world.db: the canonical, player-neutral shared game world.
 
-The shared world (rules, the cast's base facts, mercenary specs, the family
-roster, world facts, timeline, offices, ports, territories, forms of address,
-and the run-of-play logistics) is identical for every character and comes from
-the game documents, NOT from any one player. Seeding a new packet from another
-player's database carried that player's perspective into supposedly-shared
-columns ("Uncle Fabrizio", their starting state). This produces a neutral seed
-instead: the same document-derived facts with every player overlay stripped.
+The shared world is identical for every character and comes from the game
+documents, NOT from any one player. Seeding a new packet from another player's
+database carried that player's perspective into supposedly-shared columns
+("Uncle Fabrizio", their starting state, "your ally Isabella"). This produces a
+neutral seed instead.
+
+Two kinds of shared data, two sources:
+
+  The cast (characters table) comes from the canonical roster file
+  reference/cast.json, which is derived directly from the game's Dramatis
+  Personae (the Character List PDF), the public and player-neutral description
+  of everyone in play. Sourcing the cast from the document, rather than from one
+  player's packet, is what keeps second-person framing out of the shared world.
+
+  The objective reference tables (rules, world facts, timeline, offices, ports,
+  territories, forms of address, monastic orders, mercenary combat specs, the
+  family roster, and the run-of-play logistics) are harvested from a populated
+  BASE_DB. These carry no perspective: they are the same document-derived facts
+  for every player. The family key_members and logistics are filtered so no one
+  player's framing or starting state leaks through.
 
 Usage:
     python3 build_shared_world.py BASE_DB [OUT_DB]
-where BASE_DB is any populated packet to harvest the objective facts from, and
-OUT_DB defaults to <skill>/shared-world.db. Regenerate this if the game
-materials change. copy_shared.py seeds from the result by default.
+where BASE_DB is any populated packet to harvest the objective reference tables
+from, and OUT_DB defaults to <skill>/shared-world.db. Regenerate this if the
+game materials change. copy_shared.py seeds from the result by default.
 """
 import os
-import re
+import json
 import sys
 import sqlite3
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCHEMA = os.path.join(HERE, "..", "schema.sql")
+CAST = os.path.join(HERE, "..", "reference", "cast.json")
 
 VERBATIM = ["rules", "world_facts", "timeline", "forms_of_address", "ports",
             "territories", "vatican_offices", "monastic_orders"]
-# characters whose facts are shared (base columns only; all PC-relative framing
-# is left blank for each character to author). PC-specific relatives that belong
-# to one player's sheet are not part of the shared cast.
-CHAR_BASE = ["id", "name", "title", "surname", "nickname", "age", "rank", "role",
-             "faction", "location", "papabile", "pronunciation", "monastic_order",
-             "what_they_want"]
 MERC_SPECS = ["id", "name", "faction", "experience", "specializes_in", "wont_attack",
               "num_armies", "reserve_commander", "min_price"]
 # logistics rows that are the PC's own state, not shared run-of-play info
@@ -43,12 +51,6 @@ FAM_KEY = {
     "Colonna": "Cardinal Giovanni Colonna; Fabrizio Colonna, Grand Constable of Naples; the generals Prospero and Sciarra.",
     "Malatesta": "Pandolfo Malatesta, Lord of Rimini; the mercenaries Carlo and Troilo.",
 }
-# relative prefixes that are one player's framing of a shared figure
-PREFIX = re.compile(r"^(Uncle|Aunt|Great-uncle|Great-aunt|Brother|Sister|Cousin)\s+", re.I)
-
-
-def neutral_name(name):
-    return PREFIX.sub("", name or "").strip()
 
 
 def main(argv):
@@ -72,21 +74,14 @@ def main(argv):
         out.executemany(f'insert into "{t}" ({",".join(use)}) values ({",".join("?"*len(use))})',
                         [[r[i] for i in idx] for r in rows])
 
-    # characters: shared base facts only, names neutralised, framing blank
-    names = cols(base, "characters")
-    keep = [c for c in CHAR_BASE if c in names and c in cols(out, "characters")]
-    ni = names.index("name")
-    for r in base.execute("select * from characters order by id"):
-        orig = r[ni] or ""
-        # one player's private relatives (e.g. "Aunt Costanza") are not shared cast
-        if re.match(r"^(Aunt|Great-aunt)\s+", orig, re.I):
-            continue
-        nm = neutral_name(orig)
-        vals = []
-        for c in keep:
-            v = r[names.index(c)]
-            vals.append(nm if c == "name" else v)
-        out.execute(f'insert into characters ({",".join(keep)}) values ({",".join("?"*len(keep))})', vals)
+    # cast: the canonical, document-derived roster (Dramatis Personae). Only the
+    # base, public columns; every PC-relative column stays blank for each player.
+    cast = json.load(open(CAST))["characters"]
+    out_cols = cols(out, "characters")
+    keys = [k for k in cast[0].keys() if k in out_cols] if cast else []
+    out.executemany(
+        f'insert into characters ({",".join(keys)}) values ({",".join("?"*len(keys))})',
+        [[r.get(k) for k in keys] for r in cast])
 
     # mercenaries: combat specs only
     mn = cols(base, "mercenaries")
@@ -114,6 +109,7 @@ def main(argv):
               for t in ["characters", "mercenaries", "families", "logistics"] + VERBATIM}
     out.close()
     print(f"wrote {out_path}")
+    print(f"  cast from {os.path.relpath(CAST, HERE)}")
     for t, n in counts.items():
         print(f"  {t}: {n}")
 
