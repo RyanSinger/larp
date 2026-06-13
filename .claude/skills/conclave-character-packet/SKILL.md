@@ -30,7 +30,8 @@ schema.sql              generalized 23-table schema (pc + 20 game tables + claim
 scripts/
   init_db.py            create an empty DB from schema.sql
   copy_shared.py        seed the shared game world from an existing packet DB
-  check_db.py           row-count + missing/empty-table report
+  dbhelpers.py          insert/insert_many/update helpers (author with these)
+  check_db.py           structural report + curation/depth/content quality lint
   build_content.py      DB  ->  booklet/booklet-content.js  (the generator)
   generate_pdf.cjs      print-shop HTML  ->  verified PDF (headless Chromium)
 booklet/                shared rendering assets (copy into the working booklet dir)
@@ -111,16 +112,19 @@ In short, the character sheet supplies:
   `subtitle`. Set `role` to `'Cardinal'` (default) or `'Monarch'` to pick the
   packet profile. A non-cardinal may set `cover_kicker` to override the
   "Sede Vacante" line.
-- **Monarchs** also fill `claims` (dynastic and territorial claims) and `forces`
-  (standing armies and commanders, distinct from hireable `mercenaries`). These
-  tables stay empty for cardinals. A monarch's `siblings` table holds the whole
-  direct dynasty, not just siblings: spouse, children, the heir, and parents
-  belong there too (the family tree renders them by relation).
-- **Off-roster powers.** Many figures a monarch lives or dies by are not in the
-  conclave roster and so have no `characters` row: the Prince-Electors, foreign
-  kings (a Vladislaus), creditors (the Fugger bank). Capture them in
-  `strategic_insights`, `goals`, and `claims`, since they cannot get a profile
-  card.
+- **Author with `dbhelpers`.** Insert rows with
+  `from dbhelpers import insert, insert_many, update` rather than hand-written
+  positional SQL: the statement is built from the dict keys, so a stray or missing
+  value cannot silently roll back the whole build (the recurring binding bug).
+- **Monarchs** also fill `claims` (dynastic and territorial claims), `forces`
+  (standing armies and commanders, distinct from hireable `mercenaries`), and
+  `external_powers` (the figures a monarch's game turns on who are NOT seated at
+  the conclave: the Prince-Electors, rival kings like a Vladislaus, creditors like
+  the Fugger bank, the Sultan). These three tables stay empty for cardinals.
+  Putting the off-roster game in `external_powers` gives it a real reference
+  section instead of leaving it buried in prose. A monarch's `siblings` table
+  holds the whole direct dynasty, not just siblings: spouse, children, the heir,
+  and parents belong there too (the family tree renders them by relation).
 - **The character list** fills the base facts of `characters` (name, age, rank,
   role, faction, location, papabile).
 - **The rules PDF** fills `rules`, `vatican_offices`, `monastic_orders`,

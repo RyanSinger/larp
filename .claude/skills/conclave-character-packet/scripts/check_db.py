@@ -56,6 +56,35 @@ def main(argv):
                      "(commitments, phased strategy, and the off-roster situation a monarch's game "
                      "depends on). Author more, and keep adding them as the game unfolds.")
 
+    # Content lint: thin or missing content the structural checks miss.
+    def has(table):
+        return table in counts
+
+    if has("pc") and counts["pc"] == 1:
+        pc = dict(zip([d[0] for d in con.execute("select * from pc where id=1").description],
+                      con.execute("select * from pc where id=1").fetchone()))
+        for fld in ("cover_title", "styled_name", "subtitle"):
+            if fld in pc and not (pc.get(fld) or "").strip():
+                notes.append(f"pc.{fld} is empty: it drives the cover or contents page. Set it.")
+        role = (pc.get("role") or "Cardinal")
+        if role == "Monarch":
+            for t in ("claims", "forces", "external_powers"):
+                if counts.get(t, 0) == 0:
+                    notes.append(f"role is Monarch but {t} is empty: the monarch booklet's "
+                                 f"{t} section will not render. Author the off-roster game there.")
+    if "is_key" in char_cols:
+        thin = con.execute("select count(*) from characters where is_key=1 and "
+                           "(our_opinion is null or our_opinion='')").fetchone()[0]
+        if thin:
+            notes.append(f"{thin} key-profile character(s) have no our_opinion: their Section 2 "
+                         "card will be thin. Give each key figure framing.")
+    relcol = "relation_to_pc" if "relation_to_pc" in \
+        [r[1] for r in con.execute("PRAGMA table_info(marriage_candidates)")] else "relation_to_federico"
+    if counts.get("marriage_candidates", 0):
+        norel = con.execute(f"select count(*) from marriage_candidates where {relcol} is null or {relcol}=''").fetchone()[0]
+        if norel:
+            notes.append(f"{norel} marriage candidate(s) have no relation to the PC: say who each one is.")
+
     print()
     if warns:
         print("WARNINGS:")
