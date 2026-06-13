@@ -71,9 +71,14 @@ This fills the world tables, the base character facts, the mercenary specs, and
 the family roster, and leaves every PC-relative column blank for you to author.
 Prefer the least-authored existing packet as the source, since `what_they_want`
 and `notes` carry over as a baseline and may hold the source character's slant;
-review and adjust them. Then relabel any relatives that carry the other
-character's framing (a name like "Uncle Giovanni della Rovere" may be the new
-PC's brother).
+review and adjust them. Then **scrub the source character's perspective**: a
+seed will carry relative framing in many places, not just one. Relabel character
+names like "Uncle Fabrizio Colonna" or "Aunt Costanza" (they are the *source's*
+relatives, perhaps nothing to the new PC), and rewrite "your uncle Julius" style
+phrasing in `characters.notes`, `families.key_members`/`our_connection`,
+`logistics`, and `timeline` from the NEW PC's point of view. `check_db` flags the
+clearest cases (names beginning Uncle/Aunt). The PC's own character row is
+excluded from the roster automatically, by name.
 
 ### 3. Populate the PC-relative content from the character sheet
 Read the PCs sheet and INSERT or UPDATE rows. See `reference/sources.md` for
@@ -104,7 +109,10 @@ In short, the character sheet supplies:
   distinct `agenda.section` becomes its own booklet table (item, detail, optional
   status), placed right after Key Profiles, so the booklet's content, not just its
   framing, follows the character. `strategic_insights` also now render as a
-  "Strategy and Intelligence" section, so author them generously.
+  "Strategy and Intelligence" section. Keep the two **complementary, not
+  duplicative**: the agenda is the structured plan (vote math, targets), while
+  insights are the principles, commitments, and intel not already tabled. Do not
+  write the same point in both, or the booklet reads as repetitive.
 - **Judge who matters and flag `is_key=1` on them.** As you read the character
   sheet, decide who this PC will actually deal with most over the game: their
   patron and inner circle, their closest allied cardinals, the papal contenders
