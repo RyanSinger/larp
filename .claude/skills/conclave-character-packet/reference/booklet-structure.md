@@ -17,7 +17,7 @@ Reference sections flow continuously; **each worksheet starts on a fresh page**
 | 5 | Marriage Candidates | `marriage_candidates` | Brides + Grooms (+ Nunnery) tables |
 | 6 | Possessions & Courtiers | `possessions`, `courtiers` | two tables |
 | 7 | Forms of Address | `forms_of_address` | one table (proper + rude) |
-| 8 | Key Family Relationships | `pc.house`, `siblings`, `families` | family-tree diagram + sibling needs table + family connections |
+| 8 | Key Family Relationships | `pc.house`, `siblings`, `families` | family-tree diagram + kin needs table + family connections. The `siblings` table is the PC's direct/generational family: actual siblings group by mother, while a monarch's dynasty (spouse, children, heir, parents) lists by relation. |
 | 9 | Rules Mechanics | `rules` grouped by category | one table per category |
 | 10 | Pronunciation Guide | `characters.pronunciation` | grouped by role |
 | 11 | Game Logistics | `logistics` | one table |
@@ -44,11 +44,12 @@ correctly numbered and paged.
 
 - **Cardinal** (default): the 13 sections and 6 worksheets in the tables above.
 - **Monarch**: drops the conclave-only Starting State Checklist; inserts **Claims
-  to Thrones and Lands** (from `claims`) and **Armies and Commanders** (from
-  `forces`) right after Key Profiles; moves Forms of Address and Pronunciation to
-  the back; leads the worksheets with a **Campaign Tracker** in place of the
-  Mercenary Deal Tracker. The Vote Tracker stays (a monarch tracks the cardinals
-  as intel).
+  to Thrones and Lands** (from `claims`), **Armies and Commanders** (from
+  `forces`), and **Powers Beyond the Conclave** (from `external_powers`, the
+  Electors, rival kings, and creditors who have no roster card) right after Key
+  Profiles; moves Forms of Address and Pronunciation to the back; leads the
+  worksheets with a **Campaign Tracker** in place of the Mercenary Deal Tracker.
+  The Vote Tracker stays (a monarch tracks the cardinals as intel).
 
 Add or adjust a profile in `_profile()` in `build_content.py`. Monarch-only
 sections (`sec_claims`, `sec_forces`) and worksheets (`ws_campaign`) return empty
