@@ -204,7 +204,19 @@ def sec_all_other(con):
     return "\n\n".join(parts)
 
 
+def _brokers_mercenaries(con):
+    """True if the PC has a stake in the mercenary market, signalled by having
+    framed any mercenary (priority, natural_buyers, or an angle in notes). The
+    full commander roster is a broker's tool (Sanseverino's whole game); for a
+    PC who has not framed them it is just the shared spec list, so omit it."""
+    return bool(rows(con, "select 1 from mercenaries where "
+                          "coalesce(priority,'')!='' or coalesce(natural_buyers,'')!='' "
+                          "or coalesce(notes,'')!='' limit 1"))
+
+
 def sec_mercenaries(con):
+    if not _brokers_mercenaries(con):
+        return ""
     parts = ['<h2>4. Mercenary Reference</h2>']
     for label, exp, note in [("Experienced Commanders", "Experienced", ""),
                              ("Fledgling Commanders (need 40,000 to raise army)", "Fledgling", "")]:
@@ -497,6 +509,8 @@ def sheet_head(title, pcname):
 
 
 def ws_mercenary(con, pcname):
+    if not _brokers_mercenaries(con):
+        return ""
     out = [sheet_head("Mercenary Deal Tracker", pcname)]
     out.append('<div class="reminder-box">\n<strong>Pricing.</strong> 40,000 fl. minimum '
                '(real profit). 20,000 bare minimum. 50,000 is good pay; 60,000+ very good. '
@@ -750,7 +764,7 @@ def build(db_path):
 
     sec_builders, ws_builders = _profile(role)
     sections = _renumber([b(con) for b in sec_builders])
-    worksheets = [worksheets_intro()] + [b(con, pcname) for b in ws_builders]
+    worksheets = [worksheets_intro()] + [w for w in (b(con, pcname) for b in ws_builders) if w]
     ident = identity(con)
     con.close()
     return "\n\n".join(sections + worksheets), ident

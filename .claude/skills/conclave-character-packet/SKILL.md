@@ -131,9 +131,12 @@ In short, the character sheet supplies:
   `forms_of_address`, `ports`, `territories`, `logistics`.
 - **The world-facts PDF** fills `world_facts`; **the timeline PDF** fills `timeline`.
 - **`marriage_candidates`** are the PC's OWN brides and grooms (their kin to marry
-  off), listed on the sheet, not a shared roster. Rebuild them per character. The
-  **`mercenaries`** roster is shared; only its priority/buyer/notes framing is the
-  PC's.
+  off), listed on the sheet, not a shared roster. Rebuild them per character.
+- **`mercenaries`** is a shared roster, but the Mercenary Reference section and
+  Mercenary Deal Tracker only render if the PC has framed it (set any
+  `priority` / `natural_buyers` / `notes`). The full commander roster is a
+  broker's tool: author the framing for a mercenary-broker PC (Sanseverino), and
+  leave it blank for a PC who only occasionally hires, so the section omits.
 
 Use the PC's voice throughout (second person "you"), exact period honorifics,
 explanations in plain English, **no dashes as separators, no emoji** (use colons,
