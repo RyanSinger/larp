@@ -13,7 +13,7 @@ Reference sections flow continuously; **each worksheet starts on a fresh page**
 | 1 | Personal Quick Reference | `pc`, `goals`, allied `characters` | namebar + qr-meta + ranked goals + two-column ally list + reminders |
 | 2 | Key Character Profiles | `characters` where `is_key` (skill-judged from the sheet; fallback `(papabile or is_ally) and role not NPC`) | `.profile` cards: They want / You want / You offer / Avoid / Your opinion |
 | 3 | All Other Characters | `characters` not in Section 2, by role | `.t-tight` tables (Cardinals, Functionaries, Monarchs, Other) |
-| 4 | Mercenary Reference | `mercenaries` | Experienced + Fledgling tables |
+| 4 | Mercenary Reference | `mercenaries` | Experienced + Fledgling tables. Shown only if the PC has framed the mercenaries (any priority/natural_buyers/notes set): the full commander roster is a broker's tool. The Mercenary Deal Tracker worksheet is gated the same way. |
 | 5 | Marriage Candidates | `marriage_candidates` | Brides + Grooms (+ Nunnery) tables |
 | 6 | Possessions & Courtiers | `possessions`, `courtiers` | two tables |
 | 7 | Forms of Address | `forms_of_address` | one table (proper + rude) |
